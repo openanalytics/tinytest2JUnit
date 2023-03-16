@@ -31,6 +31,7 @@ for (i in seq_along(foldersToTest)) {
 # Test that when overwrite = TRUE. The file is actually being overwritten.
 
 randomTestFolder <- sample(foldersToTest, size  = 1)
+testresults <- writeJUnit(tinytests = testresults, file = tmpFile)
 
 tmpFile <- tempfile(fileext = ".xml")
 if(file.exists(tmpFile)) stop("File should not have existed!")
