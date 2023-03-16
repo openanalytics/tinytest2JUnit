@@ -74,7 +74,7 @@ constructTeststuiteTag <- function(testResultsSingleFile){
 #' @author ltuijnder
 constructTestcaseTag <- function(tinytest){
   
-  stopifnot(inherits(testResultsSingleFile, "tinytests"))
+  stopifnot(inherits(tinytest, "tinytest"))
   
   attributes <- list()
   
