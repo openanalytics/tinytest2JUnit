@@ -4,14 +4,21 @@
 ###############################################################################
 
 
+dir <- "~/git/tinytest2JUnit/inst/example_tests/multiple_files/"
 
 
 heavy_calculation <- function(){
   
-  Sys.sleep(runif(1,1,3)) # sleep for 1 to 3 seconds
+  Sys.sleep(runif(1,0,1)) # sleep for 0 to 1 seconds
   TRUE
 }
 
-expect_false(heavy_calculation())
+expect_false(
+  if(heavy_calculation()){
+    TRUE
+  }else{
+    FALSE
+  }
+)
 
 

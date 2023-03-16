@@ -9,7 +9,6 @@ Description: Convert tinytest test's results ouptut to JUnit xml to allow it to 
 Imports:
 	tinytest
 License: file LICENSE
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-

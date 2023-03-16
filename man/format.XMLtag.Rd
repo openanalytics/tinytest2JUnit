@@ -10,7 +10,7 @@
 \item{tag}{a \code{XMLtag}-object}
 
 \item{level}{print depth level. For each level 2 spaces are added to the left. The content of a
-tag is automatically indendted with 1 level.}
+tag is automatically indented with 1 level.}
 
 \item{...}{to ignore}
 }

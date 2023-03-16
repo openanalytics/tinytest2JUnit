@@ -4,25 +4,23 @@
 \alias{tag}
 \title{XML tag}
 \usage{
-tag(name, ...)
+tag(name, attributes = list(), content = list())
 }
 \arguments{
 \item{name}{\code{character(1)} specifying the name of the tag.}
 
-\item{...}{named arguments represent xml attributes, while unnamed arguments represents tag content.}
+\item{attributes}{\code{named-list} being the xml attributes.
+Names = attribute names, Values = attribute value.}
+
+\item{content}{\code{unnamed-list} being the content xml-tag. Each element is placed
+next to each other in the tag.}
 }
 \value{
-a \code{XMLtag}-object. The name of element is the tag-name.
-The value of the element represents the tag content. The attributes of the tag are attached to
-the tag_content (to not conflict with the names attribute of the tag)
+a \code{XMLtag}-object.
 }
 \description{
 Create a list object that roughly mimics the behaviour of a simplistic xml tag element.
 Supported is xml tag-name, tag-attributes and tag-content.
-}
-\details{
-The \code{xml-tag} object is a under-the-hood a list object with 2 attributes. "tag-name" and "class". The
-latter of couse being "xml-tag" while the "name" attribute contains the tag name.
 }
 \author{
 ltuijnder

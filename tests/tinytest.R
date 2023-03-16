@@ -1,4 +1,4 @@
 
 
 
-tinytest::test_package("tinytestToJUnit")
+tinytest::test_package("tinytest2JUnit")

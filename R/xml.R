@@ -4,26 +4,17 @@
 #' Create a list object that roughly mimics the behaviour of a simplistic xml tag element. 
 #' Supported is xml tag-name, tag-attributes and tag-content.
 #' 
-#' The `xml-tag` object is a under-the-hood a list object with 2 attributes. "tag-name" and "class". The
-#' latter of couse being "xml-tag" while the "name" attribute contains the tag name. 
-#' 
 #' @param name `character(1)` specifying the name of the tag.
-#' @param ... named arguments represent xml attributes, while unnamed arguments represents tag content.
+#' @param attributes `named-list` being the xml attributes. 
+#'    Names = attribute names, Values = attribute value.
+#' @param content `unnamed-list` being the content xml-tag. Each element is placed 
+#'  next to each other in the tag.
 #' 
-#' @return a `XMLtag`-object. The name of element is the tag-name.
-#'   The value of the element represents the tag content. The attributes of the tag are attached to 
-#'   the tag_content (to not conflict with the names attribute of the tag)
-#'  
+#' @return a `XMLtag`-object. 
 #' @author ltuijnder
-tag <- function(name, ...){
-  args <- list(...)
-  if(is.null(names(args))){
-    attributes = list()
-    content = args
-  }else{
-    attributes = args[names(args)!=""]
-    content = args[names(args)==""]
-  }
+tag <- function(name, attributes = list(), content = list()){
+  stopifnot( is.list(attributes), is.list(content), is.null(names(content)))
+  if(length(attributes) > 0) stopifnot(!is.null(names(attributes)), all(nchar(names(attributes))>0))
   structure(list(name = name, attributes = attributes, content = content), class = "XMLtag")
 }
 
@@ -33,7 +24,7 @@ tag <- function(name, ...){
 #' 
 #' @param tag a `XMLtag`-object
 #' @param level print depth level. For each level 2 spaces are added to the left. The content of a 
-#'   tag is automatically indendted with 1 level.
+#'   tag is automatically indented with 1 level.
 #' @param ... to ignore
 #' @return `character(1)` vector of the formatted XML tag. 
 #' @author ltuijnder
@@ -58,7 +49,6 @@ format.XMLtag <- function(tag, level = 0, ...){
     n_spaces_tag, "</", tag$name, ">"
   )
 }
-## Refactor the above:paste0
 
 
 #' Print method for XMLtag class.

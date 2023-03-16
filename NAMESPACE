@@ -2,5 +2,3 @@
 
 S3method(format,XMLtag)
 S3method(print,XMLtag)
-export(convert_2_junit)
-export(run_and_convert)
