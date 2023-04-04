@@ -88,11 +88,6 @@ pipeline {
             stages {
                 stage('tinytest2JUnit') {
                     stages {
-                        stage('Rcpp Compile Attributes') {
-                            steps {
-                                sh 'R -q -e \'if (requireNamespace("Rcpp", quietly = TRUE)) Rcpp::compileAttributes(".")\''
-                            }
-                        }
                         stage('Roxygen') {
                             steps {
                                 sh 'R -q -e \'roxygen2::roxygenize(".")\''
@@ -118,6 +113,7 @@ pipeline {
                                 sh 'R -q -e \'install.packages(list.files(".", "tinytest2JUnit_.*.tar.gz"), repos = NULL)\''
                             }
                         }
+                        // Please update me with tinytest2JUnit::writeJUnit
                         stage('Test and coverage') {
                             steps {
                                 dir('.') {
