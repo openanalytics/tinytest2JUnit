@@ -90,12 +90,12 @@ pipeline {
                     stages {
                         stage('Roxygen') {
                             steps {
-                                sh 'R -q -e \'roxygen2::roxygenize(".")\''
+                                sh 'R -q -e \'roxygen2::roxygenize("tinytest2JUnit")\''
                             }
                         }
                         stage('Build') {
                             steps {
-                                sh 'R CMD build .'
+                                sh 'R CMD build tinytest2JUnit'
                             }
                         }
                         stage('Check') {
@@ -113,7 +113,7 @@ pipeline {
                                 sh 'R -q -e \'install.packages(list.files(".", "tinytest2JUnit_.*.tar.gz"), repos = NULL)\''
                             }
                         }
-                        // Please update me with tinytest2JUnit::writeJUnit
+                        \\ Please update me with tinytest2JUnit::writeJUnit
                         stage('Test and coverage') {
                             steps {
                                 dir('.') {
