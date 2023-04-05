@@ -126,7 +126,7 @@ pipeline {
                         }
                         stage('Test and coverage') {
                             steps {
-                                dir('.') {
+                                dir('tinytest2JUnit') {
                                     sh '''R -q -e \'code <- "testthat::test_package(\\"tinytest2JUnit\\", reporter = testthat::MultiReporter$new(list(testthat::SummaryReporter$new(file = file.path(getwd(), \\"test-results.txt\\")), testthat::JunitReporter$new(file = file.path(getwd(), \\"results.xml\\")))))"
                                     packageCoverage <- covr::package_coverage(type = "none", code = code)
                                     cat(readLines(file.path(getwd(), "test-results.txt")), sep = "\n")
@@ -135,7 +135,7 @@ pipeline {
                             }
                             post {
                                 always {
-                                    dir('.') {
+                                    dir('tinytest2JUnit') {
                                         junit 'results.xml'
                                         cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
                                     }
