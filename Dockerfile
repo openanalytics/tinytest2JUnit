@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     libcurl4-openssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN R -e "cat(\"local(options(repos = structure(NA_character_, .Names = NA_character_)))\n\", file = R.home('etc/Rprofile.site'), append = TRUE)"
+RUN R -e "cat(\"local(options(repos = c(CRAN = 'https://cloud.r-project.org', OA_RDEPOT = 'https://repos.openanalytics.eu/repo/public')))\n\", file = R.home('etc/Rprofile.site'), append = TRUE)"
 
 # install dependencies
 RUN R -q -e "install.packages('remotes')" && \
