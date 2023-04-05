@@ -19,6 +19,12 @@ pipeline {
                     apiVersion: v1
                     kind: Pod
                     spec:
+                      imagePullSecrets:
+                        - name: registry-robot
+                      volumes:
+                        - name: kaniko-dockerconfig
+                          secret:
+                            secretName: registry-robot
                       containers:
                       - name: kaniko
                         image: gcr.io/kaniko-project/executor:v1.5.2-debug
@@ -34,7 +40,12 @@ pipeline {
                               memory: "1024Mi"
                           limits:
                               memory: "4096Mi"
+                              ephemeral-storage: 2Gi
                         imagePullPolicy: Always
+                        volumeMounts:
+                          - name: kaniko-dockerconfig
+                            mountPath: /kaniko/.docker/config.json
+                            subPath: .dockerconfigjson
                       - name: aws-cli
                         image: amazon/aws-cli:2.1.33
                         command:
