@@ -113,7 +113,6 @@ pipeline {
                                 sh 'R -q -e \'install.packages(list.files(".", "tinytest2JUnit_.*.tar.gz"), repos = NULL)\''
                             }
                         }
-                        \\ Please update me with tinytest2JUnit::writeJUnit
                         stage('Test and coverage') {
                             steps {
                                 dir('.') {
