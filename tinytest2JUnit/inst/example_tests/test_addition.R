@@ -3,7 +3,7 @@
 # Author: ltuijnder
 ###############################################################################
 
-dir <- "~/git/tinytest2JUnit/inst/example_tests/simple_tests/"
+#dir <- "~/git/tinytest2JUnit/inst/example_tests/simple_tests/"
 
 
 add <- function(a, b){
