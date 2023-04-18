@@ -127,9 +127,10 @@ pipeline {
                         stage('Test and coverage') {
                             steps {
                                 dir('tinytest2JUnit') {
-                                    sh '''R -q -e \'code <- "tinytest::test_package(\\"tinytest2JUnit\\", testdir = \\"inst/example_tests/\\"))"
-                                    packageCoverage <- covr::package_coverage(type = "none", code = code)
-                                    covr::to_cobertura(packageCoverage)\''''
+                                    sh '''R -q -e \'code <- "tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"example_tests"\\, package=\\"tinytest2JUnit\\")), file = file.path(getwd(), \\"results.xml\\"))"
+                               //    packageCoverage <- covr::package_coverage(type = "none", code = code)
+                               //     cat(readLines(file.path(getwd(), "test-results.txt")), sep = "\n")
+                               //     covr::to_cobertura(packageCoverage)\''''
                                 }
                             }
                             post {
