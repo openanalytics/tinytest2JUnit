@@ -13,7 +13,7 @@
 #' @return `XMLtag`: with tag-name = "testsuites". This is the root of the JUnit xml document.
 #' @author ltuijnder
 constructTeststuitesTag <- function(testResults){
-  
+ 
   stopifnot(inherits(testResults, "tinytests"))
   
   vctTestFiles <- vapply(testResults, function(tinytest) attr(tinytest, "file"), FUN.VALUE = character(1))
