@@ -10,10 +10,13 @@ tinytest::run_test_dir(system.file("tinytest", package="tinytest"))
 
 
 tinytest::test_package("tinytest2JUnit", testdir = "inst/example_tests/heavy_calculations")
-tinytest::test_package("tinytest2JUnit", testdir = "inst/tinytest")
-	
+out <- tinytest::test_package("tinytest2JUnit", testdir = "inst/tinytest")
 
-out <- tinytest::run_test_dir("inst/tinytest", package="tinytest2JUnit")
+tmpFile <- tempfile(fileext = ".xml")
+writeJUnit(out, tmpFile)	
+cat(readLines( tmpFile), sep = "\n")
+
+out <- tinytest::run_test_dir(system.file("tinytest", package="tinytest2JUnit"))
 
 test_all(pkgdir = "tinytest2JUnit", testdir = "inst/example_tests/multiple_files")
 summary(out)
