@@ -14,7 +14,7 @@ for (i in seq_along(foldersToTest)) {
   if(file.exists(tmpFile)) stop("File should not have existed!")
   
   testresults <- tinytest::run_test_dir(foldersToTest[i], verbose = F)
-  expect_true(
+  expect_true(	
     writeJUnit(tinytests = testresults, file = tmpFile),
     info = paste0("writeJUnit() succeeded for directory: ", folderName[i])
   )
@@ -27,14 +27,13 @@ for (i in seq_along(foldersToTest)) {
   
 }
 
-
 # Test that when overwrite = TRUE. The file is actually being overwritten.
-
-randomTestFolder <- sample(foldersToTest, size  = 1)
-testresults <- writeJUnit(tinytests = testresults, file = tmpFile)
 
 tmpFile <- tempfile(fileext = ".xml")
 if(file.exists(tmpFile)) stop("File should not have existed!")
+
+randomTestFolder <- sample(foldersToTest, size  = 1)
+testresults <- tinytest::run_test_dir(randomTestFolder, verbose = F)
 
 writeJUnit(tinytests = testresults, file = tmpFile)
 nLinesWrittenFirstTime <- length(readLines(tmpFile))

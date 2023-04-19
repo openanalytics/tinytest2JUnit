@@ -2,8 +2,6 @@
 
 roxygen2::roxygenize("tinytest2JUnit")
 
-library(tinytest)
-
 # tiny test examples
 
 out <- tinytest::run_test_dir(system.file("tinytest", package="tinytest"), verbose=0)
@@ -15,8 +13,7 @@ tinytest::test_package("tinytest2JUnit", testdir = "inst/example_tests/heavy_cal
 tinytest::test_package("tinytest2JUnit", testdir = "inst/tinytest")
 	
 
-
-out <- tinytest::run_test_dir("inst/tinytest", at_home = FALSE)
+out <- tinytest::run_test_dir("inst/tinytest", package="tinytest2JUnit")
 
 test_all(pkgdir = "tinytest2JUnit", testdir = "inst/example_tests/multiple_files")
 summary(out)
