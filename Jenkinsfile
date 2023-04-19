@@ -127,10 +127,10 @@ pipeline {
                         stage('Test and coverage') {
                             steps {
                                 dir('tinytest2JUnit') {
-                                    sh '''R -q -e \'code <- "testthat::test_package(\\"tinytest2JUnit\\", reporter = testthat::MultiReporter$new(list(testthat::SummaryReporter$new(file = file.path(getwd(), \\"test-results.txt\\")), testthat::JunitReporter$new(file = file.path(getwd(), \\"results.xml\\")))))"
-                                    packageCoverage <- covr::package_coverage(type = "none", code = code)
-                                    cat(readLines(file.path(getwd(), "test-results.txt")), sep = "\n")
-                                    covr::to_cobertura(packageCoverage)\''''
+                                    sh '''R -q -e \'code <- "tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"example_tests\\", package=\\"tinytest2JUnit\\")), file = file.path(getwd(), \\"results.xml\\"))"
+                                   packageCoverage <- covr::package_coverage(type = "none", code = code)
+                                   cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
+                                   covr::to_cobertura(packageCoverage)\''''
                                 }
                             }
                             post {
