@@ -10,9 +10,6 @@ out <- tinytest::run_test_dir(system.file("tinytest", package="tinytest"), verbo
 summary(out)
 tinytest::run_test_dir(system.file("tinytest", package="tinytest"))
 
-
-tinytest::test_package("tinytest2JUnit", testdir = "inst/example_tests/heavy_calculations")
-tinytest::test_package("tinytest2JUnit", testdir = "inst/example_tests/")
 tinytest::test_package("tinytest2JUnit", testdir = "inst/tinytest")	
 
 
