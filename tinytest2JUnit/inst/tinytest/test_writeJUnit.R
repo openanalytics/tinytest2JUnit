@@ -1,5 +1,5 @@
 
-testresults <- tinytest::run_test_file(system.file("tinytest/test_addition", package="tinytest2JUnit"), verbose = F)
+testresults <- tinytest::run_test_file(system.file("tinytest/test_addition.R", package="tinytest2JUnit"), verbose = F)
 
 
 # Test that when overwrite = TRUE. The file is actually being overwritten.

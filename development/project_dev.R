@@ -11,7 +11,7 @@ summary(out)
 tinytest::run_test_dir(system.file("tinytest", package="tinytest"))
 
 tinytest::test_package("tinytest2JUnit", testdir = "inst/tinytest")	
-
+tinytest::run_test_dir(system.file("tinytest2JUnit", package="tinytest"))
 
 test_all(pkgdir = "tinytest2JUnit",  testdir = "inst/example_tests")
 summary(out)
