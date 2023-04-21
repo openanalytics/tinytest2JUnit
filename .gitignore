@@ -8,3 +8,7 @@
 *.gz
 *.tar
 *.Rcheck
+
+# testthat files, only for development
+
+/tinytest2JUnit/tests/
