@@ -19,3 +19,9 @@ expect_equal(
 
 expect_error(writeJUnit(tinytests = testresults, file = tmpFile, overwrite = FALSE),
 		info = "Overwrite = FALSE does indeed not overwrite a file if it already exists.")
+
+tmpFile <- tempfile(fileext = ".xml")
+if(file.exists(tmpFile)) stop("File should not have existed!")
+
+skipped_res <- tinytest::run_test_file(system.file("tinytest/test_partial_skipped.R", package="tinytest2JUnit"))
+writeJUnit
