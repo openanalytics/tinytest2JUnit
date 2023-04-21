@@ -5,17 +5,18 @@ roxygen2::roxygenize("tinytest2JUnit")
 library(tinytest)
 
 # tiny test examples
-
 out <- tinytest::run_test_dir(system.file("tinytest", package="tinytest"), verbose=0)
 summary(out)
 tinytest::run_test_dir(system.file("tinytest", package="tinytest"))
 
+# possible ways to run tests on tinytest2JUnit
 tinytest::test_package("tinytest2JUnit", testdir = "inst/tinytest")	
 tinytest::run_test_dir(system.file("tinytest", package="tinytest2JUnit"))
 
 res1 <- tinytest::run_test_file(system.file("tinytest/test_partial_skipped.R", package="tinytest2JUnit"))
 res2 <- tinytest::run_test_file(system.file("tinytest/test_everything_skipped.R", package="tinytest2JUnit"))
 
+# testing on reproducing testthat output
 tmpFile <- tempfile(fileext = ".xml")
 res1_out <- writeJUnit(res1, tmpFile)
 
