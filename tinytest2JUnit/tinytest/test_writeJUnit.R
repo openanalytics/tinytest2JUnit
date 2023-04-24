@@ -14,16 +14,17 @@ for (i in seq_along(foldersToTest)) {
   if(file.exists(tmpFile)) stop("File should not have existed!")
   
   testresults <- tinytest::run_test_dir(foldersToTest[i], verbose = F)
+
   expect_true(	
     writeJUnit(tinytests = testresults, file = tmpFile),
     info = paste0("writeJUnit() succeeded for directory: ", folderName[i])
   )
   expect_true(file.exists(tmpFile))
   
-  expect_equal(
-    readLines(tmpFile, n = 1),
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-  )
+	  expect_equal(
+	    readLines(tmpFile, n = 1),
+	    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+	  )
   
 }
 
