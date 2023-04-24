@@ -1,7 +1,7 @@
 
 
   testresults <- tinytest::run_test_dir(file.path(system.file("example_tests", package = "tinytest2JUnit"), "empty_tests"), verbose = F)
-  targ <- constructTeststuitesTag(testresults)
+  targ <- tinytest2JUnit::constructTeststuitesTag(testresults)
   expect_equal(targ$attributes$tests, 0L)
   expect_equal(attr(targ, "names"), c("name", "attributes", "content"))
   expect_equal(attr(targ, "class"), "XMLtag")
@@ -11,7 +11,7 @@
   expect_equal(targ$attributes$name, "tinytest results")
 		  
   testresults <- tinytest::run_test_dir(file.path(system.file("example_tests", package = "tinytest2JUnit"), "empty_test_folder"), verbose = F)
-  targ <- constructTeststuitesTag(testresults)
+  targ <- tinytest2JUnit::constructTeststuitesTag(testresults)
   expect_equal(targ$attributes$tests, 0L)
   expect_equal(attr(targ, "names"), c("name", "attributes", "content"))
   expect_equal(attr(targ, "class"), "XMLtag")
@@ -21,7 +21,7 @@
   expect_equal(targ$attributes$name, "tinytest results")
   
   testresults <- tinytest::run_test_dir(file.path(system.file("example_tests", package = "tinytest2JUnit"), "heavy_calculations"), verbose = F)
-  targ <- constructTeststuitesTag(testresults)
+  targ <- tinytest2JUnit::constructTeststuitesTag(testresults)
   expect_equal(names(targ$attributes), c("name", "tests", "failures", "duration"))
   expect_true(!is.na(targ$attributes$duration))
   expect_true(targ$attributes$tests == 1L)
@@ -31,7 +31,7 @@
   expect_equal(targ$content[[1]]$content[[1]]$attribute, list(name = "test_heavy_calculation.R: L16", status = "PASSED"))
   
   testresults <- tinytest::run_test_dir(file.path(system.file("example_tests", package = "tinytest2JUnit"), "multi_line_except_statement"), verbose = F)
-  targ <- constructTeststuitesTag(testresults)
+  targ <- tinytest2JUnit::constructTeststuitesTag(testresults)
   expect_equal(names(targ$attributes), c("name", "tests", "failures", "duration"))
   expect_true(!is.na(targ$attributes$duration))
   expect_true(targ$attributes$tests == 1L)
@@ -41,7 +41,7 @@
   expect_equal(targ$content[[1]]$content[[1]]$attribute, list(name = "test_multiline_except.R: L9-L15", status = "FAILED"))
   
   testresults <- tinytest::run_test_dir(file.path(system.file("example_tests", package = "tinytest2JUnit"), "multiple_files"), verbose = F)
-  targ <- constructTeststuitesTag(testresults)
+  targ <- tinytest2JUnit::constructTeststuitesTag(testresults)
   expect_equal(names(targ$attributes), c("name", "tests", "failures", "duration"))
   expect_true(!is.na(targ$attributes$duration))
   expect_true(targ$attributes$tests == 3L)
@@ -54,7 +54,7 @@
   expect_equal(targ$content[[2]]$content[[1]]$attribute, list(name = "test_file2.R: L9-L15", status = "FAILED"))
   
   testresults <- tinytest::run_test_dir(file.path(system.file("example_tests", package = "tinytest2JUnit"), "simple_tests"), verbose = F)
-  targ <- constructTeststuitesTag(testresults)
+  targ <- tinytest2JUnit::constructTeststuitesTag(testresults)
   expect_equal(names(targ$attributes), c("name", "tests", "failures", "duration"))
   expect_true(!is.na(targ$attributes$duration))
   expect_true(targ$attributes$tests == 4L)
@@ -63,7 +63,7 @@
   expect_equal(targ$content[[1]]$attribute, list(name = "test_addition.R", tests = 4L, failures = 1L))
 
   testresults <- tinytest::run_test_dir(file.path(system.file("example_tests", package = "tinytest2JUnit"), "skips"), verbose = F)
-  targ <- constructTeststuitesTag(testresults)
+  targ <- tinytest2JUnit::constructTeststuitesTag(testresults)
   expect_equal(names(targ$attributes), c("name", "tests", "failures", "duration"))
   expect_true(!is.na(targ$attributes$duration))
   expect_true(targ$attributes$tests == 1L)
