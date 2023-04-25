@@ -25,7 +25,7 @@ constructTeststuitesTag <- function(testResults){
     failures = sum(vctFailed)
   )
   
-  attributes$duration <- attr(testResults, "duration")
+  duration <- attr(testResults, "duration")
   if(is.numeric(duration) && !is.na(duration)) attributes$duration <- as.character(duration)
   
   tag(
