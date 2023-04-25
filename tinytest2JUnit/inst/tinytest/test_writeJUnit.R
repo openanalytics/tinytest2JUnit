@@ -48,3 +48,18 @@ expect_equal(
 
 expect_error(writeJUnit(tinytests = testresults, file = tmpFile, overwrite = FALSE),
   info = "Overwrite = FALSE does indeed not overwrite a file if it already exists.")
+
+# Test writeJUnit on empty tinytest results
+
+testresults <- tinytest::test_package("tinytest2JUnit", testdir = file.path(system.file("example_tests/empty_test_folder", package =  "tinytest2JUnit")), verbose = F)
+writeJUnit(tinytests = testresults, file = tmpFile, overwrite = TRUE)
+
+expect_true(	
+		writeJUnit(tinytests = testresults, file = tmpFile, overwrite = TRUE),
+		info = "writeJUnit() succeeded for empty directory")
+expect_true(file.exists(tmpFile))
+
+expect_equal(
+		readLines(tmpFile, n = 1),
+		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+)
