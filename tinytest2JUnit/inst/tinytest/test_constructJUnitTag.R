@@ -9,7 +9,8 @@
   expect_true(!is.na(targ$attributes$duration))
   expect_true(targ$attributes$tests == 0L)
   expect_equal(targ$attributes$name, "tinytest results")
-		  
+
+# if tested folder is empty, Jenkins pipeline failes with "Error in setwd(dir) : cannot change working directory"
 #  testresults <- tinytest::run_test_dir(file.path(system.file("example_tests", package = "tinytest2JUnit"), "empty_test_folder"), verbose = F)
 #  targ <- tinytest2JUnit::constructTeststuitesTag(testresults)
 #  expect_equal(targ$attributes$tests, 0L)
