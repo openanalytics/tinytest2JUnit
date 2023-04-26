@@ -12,6 +12,8 @@
 #'   Usually the result of calling [tinytest::test_package()].
 #' @return `XMLtag`: with tag-name = "testsuites". This is the root of the JUnit xml document.
 #' @author ltuijnder
+#' 
+#' @export
 constructTeststuitesTag <- function(testResults){
  
   stopifnot(inherits(testResults, "tinytests"))

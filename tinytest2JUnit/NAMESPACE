@@ -2,5 +2,6 @@
 
 S3method(format,XMLtag)
 S3method(print,XMLtag)
+export(constructTeststuitesTag)
 export(writeJUnit)
 import(tinytest)
