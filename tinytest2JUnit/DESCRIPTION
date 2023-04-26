@@ -6,10 +6,11 @@ Date: 2023-01-20
 Author: ltuijnder
 Maintainer: ltuijnder <lennart.tuijnder@openanalytics.eu>
 Description: Convert tinytest test's results ouptut to JUnit xml to allow it to be used in the jenkins pipeline. 
-Imports:
+Imports: 
 	tinytest
 License: file LICENSE
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
+Suggests: tinytest

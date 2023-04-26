@@ -10,8 +10,9 @@ summary(out)
 tinytest::run_test_dir(system.file("tinytest", package="tinytest"))
 
 # possible ways to run tests on tinytest2JUnit
-out1 <- tinytest::test_package("tinytest2JUnit", verbose = F)	
+out1 <- tinytest::test_package("tinytest2JUnit")	
 out2 <- tinytest::run_test_dir(system.file("tinytest", package="tinytest2JUnit"))
+out3 <- tinytest::test_all("tinytest2JUnit")
 
 tmpFile1 <- tempfile(fileext = ".xml")
 tmpFile2 <- tempfile(fileext = ".xml")
