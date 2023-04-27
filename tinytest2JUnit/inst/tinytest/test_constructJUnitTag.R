@@ -31,7 +31,7 @@ testresults <- tinytest::run_test_dir(system.file("example_tests/empty_tests", p
   expect_equal(targ$content[[1]]$name, "testsuite")
   expect_equal(targ$content[[1]]$attribute, list(name = "test_heavy_calculation.R", tests = 1L, failures = 0L))
   expect_equal(targ$content[[1]]$content[[1]]$attribute, list(name = "test_heavy_calculation.R: L16", status = "PASSED"))
-  browser()
+  
   testresults <- tinytest::run_test_dir(system.file("example_tests/multi_line_except_statement", package =  "tinytest2JUnit"), verbose = F)
   targ <- tinytest2JUnit::constructTeststuitesTag(testresults)
   expect_equal(names(targ$attributes), c("name", "tests", "failures", "duration"))
