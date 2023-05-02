@@ -9,6 +9,7 @@ summary(out)
 tinytest::run_test_dir(system.file("tinytest", package="tinytest"))
 
 tinytest::test_package("tinytest2JUnit", testdir = "inst/tinytest")	
+tinytest::test_all(pkgdir = "tinytest2JUnit")
 tinytest::run_test_dir(system.file("tinytest", package="tinytest2JUnit"))
 
 res1 <- tinytest::run_test_file(system.file("tinytest/test_partial_skipped.R", package="tinytest2JUnit"))
@@ -17,7 +18,7 @@ res2 <- tinytest::run_test_file(system.file("tinytest/test_everything_skipped.R"
 tmpFile <- tempfile(fileext = ".xml")
 res1_out <- writeJUnit(res1, tmpFile)
 
-test_all(pkgdir = "tinytest2JUnit",  testdir = "inst/example_tests")
+
 summary(out)
 
 library(testthat)
