@@ -1,5 +1,5 @@
 ---
-title: "Tinytest2JUnit Progress"
+title: "tinytest2JUnit Progress"
 author: 
   name:  Anne-Katrin Hess, Lennart Tuijnder
 
@@ -20,7 +20,7 @@ output:
 ## Motivation
 
 * A lightweight, no-dependency, full-featured package for unit testing
-* Testing lenguage structure similar to testthat (expect_*)
+* Testing language structure similar to `testthat` (`expect_*`)
 * Applicability for automated test reporting on Jenkins?
 
 ## Sources
@@ -34,7 +34,7 @@ output:
 ## Requirements {.columns-2 }
   
 
-* Convert tinytest test's results ouptut to JUnit xml: 
+* Convert tinytest test's results output to JUnit xml: 
     * Source code written by Lennart
     * Different test scenarios
   
@@ -55,11 +55,11 @@ output:
 tinytest::test_all(pkgdir = "mypkg")
 tinytest::run_test_dir(system.file("mypkg", package="tinytest2JUnit"))`</font>
 
-*  `test_package`: test a package during R CMD check -> causes pipeline to fail
+*  `test_package`: test a package during R CMD check -> causes Jenkins pipeline to fail
    on fail of any test
 *  `test_all`: runs tests interactively -> causes pipeline to fail on fail of
    any test
-* **`run_test_dir` is the only funcion that stores test results, without exiting
+* **`run_test_dir` is the only function that stores test results, without exiting
   Jenkins pipeline**
   
 
@@ -89,11 +89,11 @@ Can be easily fixed by running:
 `tinytest::setup_tinytest("mypkg")`	
 
 * sets up testing framework:
-  * folder in `"inst/tinytest/"` that contains expample test file
+  * folder in `"inst/tinytest/"` that contains example test file
   * add `"tests/tinytest.R"`, which is needed to run tests during R CMD check
-  * add tinytest to suggests in Description file
+  * add tinytest to Suggests in DESCRIPTION file
   
-  ## Issues
+## Issues
 
 ### Test Duration is not reported {.centered}
 
