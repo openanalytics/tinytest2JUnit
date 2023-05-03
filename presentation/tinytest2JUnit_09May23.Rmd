@@ -99,12 +99,19 @@ Can be easily fixed by running:
 
 * test duration is only reported per test file not per test
 
-::: {.centered} ![](img/test_structure.png){width=1000px}
+::: {.centered}
+![](img/test_structure.png){width=1000px}
 
 &nbsp;
 
-tinytest vs. testthat :::
+tinytest vs. testthat
+:::
 
 ## Issues
 ### Skipped tests are not reported
+
+* information on skipped test is pasted during test run, but not stored inside
+  tinytest object
+  
+   ![](img/test_skip.png){width=900px}
 
