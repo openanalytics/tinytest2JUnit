@@ -12,16 +12,26 @@ output:
 ## Outline
 
 * Motivation
-* Requirements
+* Sources
+* Package Developement
+* Testing Tinytests2JUnit
 * 3 Ways to Run Tests
 * Jenkins Demo
 * Issues
 
 ## Motivation
 
-* A lightweight, no-dependency, full-featured package for unit testing
+* Tinytest is a lightweight, no-dependency, full-featured package for unit
+  testing
 * Testing language structure similar to `testthat` (`expect_*`)
-* Applicability for automated test reporting on Jenkins?
+
+<br>
+
+* Applicability for Jenkins?
+* Jenkins uses XML file format to report about the test suite execution
+* Tinytest has no build in reporter for JUnit format:
+
+  **-> Tinytest2JUnit**
 
 ## Sources
 
@@ -31,23 +41,47 @@ output:
  [https://projects.openanalytics.eu/projects/tinytest2junit/](https://projects.openanalytics.eu/projects/tinytest2junit)
   * as subproject of "Team DST"
 
-## Requirements {.columns-2 }
-  
+## Package Developement
 
+<div style="float: left; width: 80%;">  
 * Convert tinytest test's results output to JUnit xml: 
     * Source code written by Lennart
-    * Different test scenarios
-  
-<br>
 
-* Testing on Jenkins
-    * done by Anne
+![](img/tinytest_objects.png){width=750px}
+   
+![](img/testthat_xml.png){width=750px}
+
+</div>
+
+<div style="float: right; width: 20%;">
+
+&nbsp;
+
+&nbsp;
+
+tinytest object
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+testthat xml format
+</div>
+
+## Testing Tinytests2JUnit {.columns-2 }
+
+* Different test scenarios  
+* To test the package we need to use the package itself
+* master branch - test package functionality:
+  * `test_writeJUnit.R` loops over example_tests folder
+* separate branches for special test cases:
+  * see Jenkins output - tests allowed to fail
 
 <p class="forceBreak"></p>
 
 ![](img/example_tests.png){width=400px}
-  
-   
 
 ## 3 Ways to Run Tests in Tinytest
 
@@ -57,9 +91,9 @@ tinytest::run_test_dir(system.file("mypkg", package="tinytest2JUnit"))`</font>
 
 *  `test_package`: test a package during R CMD check -> causes Jenkins pipeline to fail
    on fail of any test
-*  `test_all`: runs tests interactively -> causes pipeline to fail on fail of
+*  `test_all`: runs tests interactively -> causes pipeline to exit on fail of
    any test
-* **`run_test_dir` is the only function that stores test results, without exiting
+* **`run_test_dir` is the only function that stores test results without exiting
   Jenkins pipeline**
   
 
@@ -71,10 +105,6 @@ tinytest::run_test_dir(system.file("mypkg", package="tinytest2JUnit"))`</font>
 
 [https://ci.openanalytics.eu/job/git/job/tinytest2JUnit/](https://ci.openanalytics.eu/job/git/job/tinytest2JUnit/)
 
-## Testing Tinytests2JUnit
-
-* `test_writeJUnit.R` loops over example_tests folder
-* create separate branches for special test cases
 
 ## Issues
 ### Pipeline fails with empty test folder
