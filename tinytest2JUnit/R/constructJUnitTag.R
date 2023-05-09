@@ -39,9 +39,9 @@ constructTestsuitesTag <- function(testResults){
 
 #' Construct JUnit testsuite tag 
 #' 
-#' Given all the tinytests result from a single file. Construct its the "testsuite" of t 
+#' Construct the "testsuite" of the a tinytest, given all the tinytests results from a single test file. 
 #' 
-#' @param testResultsSingleFile `tinytests` with all test results from that ran in the specified file.
+#' @param testResultsSingleFile `tinytests` with all test results of a specified test file.
 #' @return `XMLtag`: with tag-name = "testsuite" and contains all the tests results of the file.
 #' @author ltuijnder
 constructTestsuiteTag <- function(testResultsSingleFile){
