@@ -134,7 +134,7 @@ Can be easily fixed by running:
 
 &nbsp;
 
-tinytest vs. testthat
+testthat vs. tinytest
 :::
 
 ## Issues

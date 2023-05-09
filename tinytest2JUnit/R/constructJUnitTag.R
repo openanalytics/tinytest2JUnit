@@ -12,7 +12,7 @@
 #'   Usually the result of calling [tinytest::test_package()].
 #' @return `XMLtag`: with tag-name = "testsuites". This is the root of the JUnit xml document.
 #' @author ltuijnder
-constructTeststuitesTag <- function(testResults){
+constructTestsuitesTag <- function(testResults){
  
   stopifnot(inherits(testResults, "tinytests"))
   
@@ -32,7 +32,7 @@ constructTeststuitesTag <- function(testResults){
     name = "testsuites",
     attributes = attributes,
     content = lapply(X = unique(vctTestFiles),  FUN = function(file){
-        constructTeststuiteTag(testResults[vctTestFiles==file])
+        constructTestsuiteTag(testResults[vctTestFiles==file])
       })
   )
 }
@@ -44,7 +44,7 @@ constructTeststuitesTag <- function(testResults){
 #' @param testResultsSingleFile `tinytests` with all test results from that ran in the specified file.
 #' @return `XMLtag`: with tag-name = "testsuite" and contains all the tests results of the file.
 #' @author ltuijnder
-constructTeststuiteTag <- function(testResultsSingleFile){
+constructTestsuiteTag <- function(testResultsSingleFile){
   
   stopifnot(inherits(testResultsSingleFile, "tinytests"))
   

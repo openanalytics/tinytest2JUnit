@@ -24,7 +24,7 @@ writeJUnit <- function(tinytests, file, overwrite = TRUE){
     stop("Overwrite is set to = FALSE and specified file already exist:", file)
   }
   
-  JUnitXML <- constructTeststuitesTag(testResults = tinytests)
+  JUnitXML <- constructTestsuitesTag(testResults = tinytests)
   cat('<?xml version="1.0" encoding="UTF-8"?>\n', file = file, append = !overwrite)
   cat(format(JUnitXML), sep = "\n", file = file, append = TRUE)
   
