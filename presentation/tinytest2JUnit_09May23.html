@@ -3608,7 +3608,7 @@ slide[data-slide-num='12']::after {
 
 <ul>
 <li><p>Applicability for Jenkins?</p></li>
-<li><p>Jenkins uses XML file format to report about the test suite execution</p></li>
+<li><p>Jenkins uses JUnit XML format to report about the test suite execution</p></li>
 <li><p>Tinytest has no build in reporter for JUnit format:</p>
 
 <p><strong>-&gt; Tinytest2JUnit</strong></p></li>
@@ -3684,8 +3684,8 @@ slide[data-slide-num='12']::after {
 
 <ul>
 <li><code>test_package</code>: test a package during R CMD check -&gt; causes Jenkins pipeline to fail on fail of any test</li>
-<li><code>test_all</code>: runs tests interactively -&gt; causes pipeline to fail on fail of any test</li>
-<li><strong><code>run_test_dir</code> is the only function that stores test results, without exiting Jenkins pipeline</strong></li>
+<li><code>test_all</code>: runs tests interactively -&gt; causes pipeline to exit on fail of any test</li>
+<li><strong><code>run_test_dir</code> is the only function that stores test results without exiting Jenkins pipeline</strong></li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Jenkins Demo</h2></hgroup><article  id="jenkins-demo">

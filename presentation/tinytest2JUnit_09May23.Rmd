@@ -28,7 +28,7 @@ output:
 <br>
 
 * Applicability for Jenkins?
-* Jenkins uses XML file format to report about the test suite execution
+* Jenkins uses JUnit XML  format to report about the test suite execution
 * Tinytest has no build in reporter for JUnit format:
 
   **-> Tinytest2JUnit**
