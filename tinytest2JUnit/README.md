@@ -1,6 +1,7 @@
 # Tinytest2JUnit
 
-Convert tinytest test's results ouptut to JUnit xml to allow it to be used by CI/CD pipelines, e.g. GitLab Runner or Jenkins.
+A package to convert [tinytest](https://github.com/markvanderloo/tinytest) results to JUnit XML.
+This enables processing of test results by CI/CD systems such as GitLab Runner or Jenkins.
 
 ## Install
 
@@ -14,5 +15,10 @@ install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.e
 
 * Extract needed info from a tinytest S3 result object (output of `tinytest::run_test_dir()`)
 * Format the output to JUnit.xml specs as described in this reference: https://llg.cubic.org/docs/junit/
+
+## Related
+
+* tinytest package: https://github.com/markvanderloo/tinytest
+* JUnit reporter in `testthat`: https://testthat.r-lib.org/reference/JunitReporter.html
 
 **(c) Copyright Open Analytics NV, 2012-2023 - Apache License 2.0**
