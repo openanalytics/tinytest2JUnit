@@ -11,7 +11,7 @@ From the OA public repository:
 install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))
 ```
 
-## Core ideas:
+## Core idea:
 
 * Extract needed info from a tinytest S3 result object (output of `tinytest::run_test_dir()`)
 * Format the output to JUnit.xml specs as described in this reference: https://llg.cubic.org/docs/junit/
