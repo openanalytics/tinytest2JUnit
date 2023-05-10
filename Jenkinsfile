@@ -10,6 +10,11 @@ pipeline {
         TAG = sh(returnStdout: true, script: "echo $BRANCH_NAME | sed -e 's/[A-Z]/\\L&/g' -e 's/[^a-z0-9._-]/./g'").trim()
         REGION = 'eu-west-1'
         NOT_CRAN = 'true'
+        PKG_VERSION = sh(
+            returnStdout: true,
+            script: "cat tinytest2JUnit/DESCRIPTION | grep Version | sed -En 's/Version:\\s*([0-9]+([\\.-][0-9]+)+).*/\\1/gp'"
+        ).trim()
+        PKG_DEVEL = "${env.PKG_VERSION ==~ /.*9[0-9]{3}/ ? 'true' : 'false'}"
     }
     stages {
         stage('Build Image') {
@@ -156,8 +161,9 @@ pipeline {
                 }
                 stage('RDepot') {
                     when {
-                        anyOf {
+                        allOf {
                             branch 'master'
+                            equals expected: 'false', actual: env.PKG_DEVEL
                         }
                     }
                     environment {
@@ -166,10 +172,10 @@ pipeline {
                     }
                     steps {
                         container('rdepot-cli') {
-                            sh '''rdepot packages submit \
+                            sh """rdepot packages submit \
                             	-f *.tar.gz \
-                            	--replace true \
-                            	--repo public'''
+                            	--replace false \
+                            	--repo public"""
                         }
                     }
                 }
