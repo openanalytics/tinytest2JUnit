@@ -92,7 +92,12 @@ pipeline {
                         command: 
                         - cat
                         tty: true
-                        imagePullPolicy: Always"""
+                        imagePullPolicy: Always
+                      - name: rdepot-cli
+                        command:
+                        - cat
+                        tty: yes
+                        image: openanalytics/rdepot-cli:latest"""
                     defaultContainer 'r'
                 }
             }
@@ -147,6 +152,25 @@ pipeline {
                 stage('Archive artifacts') {
                     steps {
                         archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, test-results.txt', fingerprint: true
+                    }
+                }
+                stage('RDepot') {
+                    when {
+                        anyOf {
+                            branch 'master'
+                        }
+                    }
+                    environment {
+                        RDEPOT_TOKEN = credentials('jenkins-rdepot-token')
+                        RDEPOT_HOST = 'https://rdepot.openanalytics.eu'
+                    }
+                    steps {
+                        container('rdepot-cli') {
+                            sh '''rdepot packages submit \
+                            	-f *.tar.gz \
+                            	--replace false \
+                            	--repo public'''
+                        }
                     }
                 }
             }
