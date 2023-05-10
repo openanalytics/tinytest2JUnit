@@ -168,7 +168,7 @@ pipeline {
                         container('rdepot-cli') {
                             sh '''rdepot packages submit \
                             	-f *.tar.gz \
-                            	--replace false \
+                            	--replace true \
                             	--repo public'''
                         }
                     }
