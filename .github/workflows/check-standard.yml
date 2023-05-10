@@ -47,5 +47,5 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
         with:
-          working-directory: "./editbl"
+          working-directory: "./tinytest2JUnit"
           upload-snapshots: true
