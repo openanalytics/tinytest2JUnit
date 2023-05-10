@@ -8,7 +8,7 @@ Maintainer: Lennart Tuijnder <lennart.tuijnder@openanalytics.eu>
 Description: Convert tinytest test result output to JUnit XML for usage in e.g. a Jenkins pipeline. 
 Suggests: 
 	tinytest
-License: file LICENSE
+License: Apache License (>= 2.0) + file LICENSE
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
