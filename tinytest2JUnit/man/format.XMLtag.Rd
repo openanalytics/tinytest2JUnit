@@ -4,10 +4,10 @@
 \alias{format.XMLtag}
 \title{Format method for XMLtag class}
 \usage{
-\method{format}{XMLtag}(tag, level = 0, ...)
+\method{format}{XMLtag}(x, level = 0, ...)
 }
 \arguments{
-\item{tag}{a \code{XMLtag}-object}
+\item{x}{an \code{XMLtag}-object}
 
 \item{level}{print depth level. For each level 2 spaces are added to the left. The content of a
 tag is automatically indented with 1 level.}

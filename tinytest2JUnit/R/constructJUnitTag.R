@@ -69,7 +69,7 @@ constructTestsuiteTag <- function(testResultsSingleFile){
 #' 
 #' Construct JUnit testcase tag based on a single tinytest results.
 #' 
-#' @param tinytest 
+#' @param tinytest a [tinytest::tinytest()]-object representing an individual test case. 
 #' @return `XMLtag`: with tag-name = "tinytest" and contains all the tests results of the file.
 #' @author ltuijnder
 constructTestcaseTag <- function(tinytest){
@@ -96,7 +96,7 @@ constructTestcaseTag <- function(tinytest){
   failureTagAttr <- list(type = attr(tinytest, "short"))
   if(!is.na(attr(tinytest, "info"))) failureTagAttr$message <- attr(tinytest, "info")
   
-  callCharVect <- capture.output(print( attr(tinytest, "call")))
+  callCharVect <- utils::capture.output(print( attr(tinytest, "call")))
   call <- paste0('call| ', callCharVect)
   if(!is.na(attr(tinytest, "diff"))){
     diff <- paste0('diff| ', attr(tinytest, "diff"))
