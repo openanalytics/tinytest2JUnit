@@ -1,3 +1,0 @@
-#' @import tinytest
-NULL
-
