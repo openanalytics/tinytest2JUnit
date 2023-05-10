@@ -1,11 +1,11 @@
 Package: tinytest2JUnit
 Type: Package
-Title: Convert tinytest output to JUnit xml
+Title: Convert tinytest output to JUnit XML
 Version: 0.0.1
 Date: 2023-05-09
-Author: ltuijnder, ahess
-Maintainer: ltuijnder <lennart.tuijnder@openanalytics.eu>
-Description: Convert tinytest test's results ouptut to JUnit xml to allow it to be used in the jenkins pipeline. 
+Author: Lennart Tuijnder, Anne-Katrin Hess
+Maintainer: Lennart Tuijnder <lennart.tuijnder@openanalytics.eu>
+Description: Convert tinytest test result output to JUnit XML for usage in e.g. a Jenkins pipeline. 
 Suggests: 
 	tinytest
 License: file LICENSE
