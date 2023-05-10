@@ -2,14 +2,14 @@
 % Please edit documentation in R/writeJUnit.R
 \name{writeJUnit}
 \alias{writeJUnit}
-\title{Write the results in a \code{tinytests}-object into JUnit xml report.}
+\title{Write the results of a \code{tinytests}-object into JUnit xml report.}
 \usage{
 writeJUnit(tinytests, file, overwrite = TRUE)
 }
 \arguments{
 \item{tinytests}{\code{tinytests} object to convert to JUnit xml.}
 
-\item{file}{\code{character(1)}: Full file path to the .xml file to write the JUnit xml into.
+\item{file}{\code{character(1)}: Full file path to the .xml file to write the JUnit xml to.
 Example: "/home/ltuijnder/documents/results.xml".}
 
 \item{overwrite}{\code{logical(1)}: should the file be overwritten if it already exist?
@@ -23,7 +23,7 @@ Write the \code{\link[tinytest:tinytests]{tinytest::tinytests()}}-object to a JU
 }
 \section{Errors}{
 
-In case of overwrite = FALSE and the file already exist an error is thrown.
+In case of overwrite = FALSE and the file already exists an error is thrown.
 }
 
 \seealso{
