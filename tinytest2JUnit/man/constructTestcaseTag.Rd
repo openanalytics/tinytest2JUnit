@@ -7,7 +7,7 @@
 constructTestcaseTag(tinytest)
 }
 \arguments{
-\item{tinytest}{}
+\item{tinytest}{a \code{\link[tinytest:tinytest]{tinytest::tinytest()}}-object representing an individual test case.}
 }
 \value{
 \code{XMLtag}: with tag-name = "tinytest" and contains all the tests results of the file.
