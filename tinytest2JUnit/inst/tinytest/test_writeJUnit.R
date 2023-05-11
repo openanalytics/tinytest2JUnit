@@ -16,7 +16,7 @@ for (i in seq_along(foldersToTest)) {
   testresults <- tinytest::run_test_dir(foldersToTest[i], verbose = F)
 
   expect_true(	
-    tinytest2JUnut::writeJUnit(tinytests = testresults, file = tmpFile),
+    tinytest2JUnit::writeJUnit(tinytests = testresults, file = tmpFile),
     info = paste0("writeJUnit() succeeded for directory: ", folderName[i])
   )
   expect_true(file.exists(tmpFile))

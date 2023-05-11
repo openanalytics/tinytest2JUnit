@@ -20,7 +20,7 @@ jobs:
         
         run: |
           docker build -t 'tinytest2junit' . 
-          docker run --workdir /workspace -v "$PWD:/workspace" -it -d --name app ubuntu cat -
+          docker run --workdir /workspace -v "$PWD:/workspace" -d --name app ubuntu cat -
           docker exec -it app R -q -e 'roxygen2::roxygenize("tinytest2JUnit")'   # command will be executed in the container in the /workspace directory (containing your repository)
           docker exec -it app R CMD build tinytest2JUnit  
           docker cp app:/workspace/my_ouptput.txt .
