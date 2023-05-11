@@ -2,7 +2,7 @@
 # Tinytest2JUnit
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yaml)
+[![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml)
 <!-- badges: end -->
 
 ## Overview
