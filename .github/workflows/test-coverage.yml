@@ -29,12 +29,13 @@ jobs:
 
       - name: Test coverage
         run: |
-          covr::codecov(
+          packageCoverage <- covr::codecov(
             path = "./tinytest2JUnit",
             quiet = FALSE,
             clean = FALSE,
             install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package")
           )
+          covr::to_cobertura(packageCoverage)
         shell: Rscript {0}
 
       - name: Show testthat output
@@ -50,3 +51,23 @@ jobs:
         with:
           name: coverage-test-failures
           path: ${{ runner.temp }}/package
+          
+     - name: Code Coverage Report
+       uses: irongut/CodeCoverageSummary@v1.3.0
+       with:
+        filename: cobertura.xml
+        badge: true
+        fail_below_min: true
+        format: markdown
+        hide_branch_rate: false
+        hide_complexity: true
+        indicators: true
+        output: both
+        thresholds: '60 80'
+
+    - name: Add Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+        recreate: true
+        path: code-coverage-results.md
