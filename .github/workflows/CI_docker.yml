@@ -15,7 +15,8 @@ jobs:
       - name: Build an image
         env:
           GIT_CLONE_TOKEN: ${{ secrets.GH_PAT }}
-          REPOSITORY_NAME: "tinytest2JUnit"
+          REPOSITORY_NAME: "tinytest2JUnit"        
+        runs-on: ubuntu-latest
         run: |
           docker build -t 'tinytest2junit' . 
           docker run --workdir /workspace -v "$PWD:/workspace" -it -d --name app ubuntu cat -
