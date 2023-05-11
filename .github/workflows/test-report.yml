@@ -24,7 +24,8 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          working-directory: "./tinytest2JUnit"  
+          working-directory: "./tinytest2JUnit"          
+          extra-packages: any::tinytest2JUnit  
       - run: | 
           install.packages(list.files(".", "tinytest2JUnit_.*.tar.gz"), repos = NULL)
         shell: Rscript {0}
