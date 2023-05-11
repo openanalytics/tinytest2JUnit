@@ -9,14 +9,15 @@ name: build-docker
 
 jobs:
   checkout:
+    env:
+      GIT_CLONE_TOKEN: ${{ secrets.GH_PAT }}
+      REPOSITORY_NAME: "tinytest2JUnit"        
+    runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Build an image
-        env:
-          GIT_CLONE_TOKEN: ${{ secrets.GH_PAT }}
-          REPOSITORY_NAME: "tinytest2JUnit"        
-        runs-on: ubuntu-latest
+        
         run: |
           docker build -t 'tinytest2junit' . 
           docker run --workdir /workspace -v "$PWD:/workspace" -it -d --name app ubuntu cat -
