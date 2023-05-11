@@ -1,17 +1,14 @@
 Package: tinytest2JUnit
 Type: Package
-
 Title: Convert tinytest output to JUnit XML
 Version: 0.0.1-9000
 Date: 2023-05-09
 Author: Lennart Tuijnder, Anne-Katrin Hess
 Maintainer: Lennart Tuijnder <lennart.tuijnder@openanalytics.eu>
 Description: Convert tinytest test result output to JUnit XML for usage in e.g. a Jenkins pipeline. 
-Suggests:
+Suggests: 
 	tinytest
 License: Apache License (>= 2.0) + file LICENSE
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-Config/testthat/edition: 3
-Suggests: tinytest
