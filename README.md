@@ -2,8 +2,7 @@
 # Tinytest2JUnit
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/openanalytics/tinytest2JUnit/branch/master/graph/badge.svg)](https://app.codecov.io/gh/openanalytics/tinytest2JUnit?branch=master)
+[![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yaml)
 <!-- badges: end -->
 
 ## Overview
