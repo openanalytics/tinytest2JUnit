@@ -13,6 +13,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     name: Build & Test
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v2     # checkout the repo
       - run: npm ci                   # install packages
@@ -25,7 +26,5 @@ jobs:
           name: JEST Tests            # Name of the check run which will be created
           path: reports/jest-*.xml    # Path to test results
           reporter: jest-junit        # Format of test results
-          name: coverage-test-failures
-          path: ${{ runner.temp }}/package
           
 
