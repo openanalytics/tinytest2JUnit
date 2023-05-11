@@ -1,4 +1,12 @@
+
 # Tinytest2JUnit
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/openanalytics/tinytest2JUnit/branch/master/graph/badge.svg)](https://app.codecov.io/gh/openanalytics/tinytest2JUnit?branch=master)
+<!-- badges: end -->
+
+## Overview
 
 A package to convert [tinytest](https://github.com/markvanderloo/tinytest) results to JUnit XML.
 This enables processing of test results by CI/CD systems such as GitLab Runner or Jenkins.
