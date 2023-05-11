@@ -4,10 +4,10 @@
 \alias{print.XMLtag}
 \title{Print method for XMLtag class.}
 \usage{
-\method{print}{XMLtag}(tag, ...)
+\method{print}{XMLtag}(x, ...)
 }
 \arguments{
-\item{tag}{a \code{XMLtag}-object}
+\item{x}{a \code{XMLtag}-object}
 
 \item{...}{to be ignored}
 }

@@ -12,7 +12,7 @@
 #'   Usually the result of calling [tinytest::test_package()].
 #' @return `XMLtag`: with tag-name = "testsuites". This is the root of the JUnit xml document.
 #' @author ltuijnder
-constructTeststuitesTag <- function(testResults){
+constructTestsuitesTag <- function(testResults){
  
   stopifnot(inherits(testResults, "tinytests"))
   
@@ -32,19 +32,19 @@ constructTeststuitesTag <- function(testResults){
     name = "testsuites",
     attributes = attributes,
     content = lapply(X = unique(vctTestFiles),  FUN = function(file){
-        constructTeststuiteTag(testResults[vctTestFiles==file])
+        constructTestsuiteTag(testResults[vctTestFiles==file])
       })
   )
 }
 
 #' Construct JUnit testsuite tag 
 #' 
-#' Given all the tinytests result from a single file. Construct its the "testsuite" of t 
+#' Construct the "testsuite" of the a tinytest, given all the tinytests results from a single test file. 
 #' 
-#' @param testResultsSingleFile `tinytests` with all test results from that ran in the specified file.
+#' @param testResultsSingleFile `tinytests` with all test results of a specified test file.
 #' @return `XMLtag`: with tag-name = "testsuite" and contains all the tests results of the file.
 #' @author ltuijnder
-constructTeststuiteTag <- function(testResultsSingleFile){
+constructTestsuiteTag <- function(testResultsSingleFile){
   
   stopifnot(inherits(testResultsSingleFile, "tinytests"))
   
@@ -69,7 +69,7 @@ constructTeststuiteTag <- function(testResultsSingleFile){
 #' 
 #' Construct JUnit testcase tag based on a single tinytest results.
 #' 
-#' @param tinytest 
+#' @param tinytest a [tinytest::tinytest()]-object representing an individual test case. 
 #' @return `XMLtag`: with tag-name = "tinytest" and contains all the tests results of the file.
 #' @author ltuijnder
 constructTestcaseTag <- function(tinytest){
@@ -96,7 +96,7 @@ constructTestcaseTag <- function(tinytest){
   failureTagAttr <- list(type = attr(tinytest, "short"))
   if(!is.na(attr(tinytest, "info"))) failureTagAttr$message <- attr(tinytest, "info")
   
-  callCharVect <- capture.output(print( attr(tinytest, "call")))
+  callCharVect <- utils::capture.output(print( attr(tinytest, "call")))
   call <- paste0('call| ', callCharVect)
   if(!is.na(attr(tinytest, "diff"))){
     diff <- paste0('diff| ', attr(tinytest, "diff"))

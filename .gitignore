@@ -1,6 +1,6 @@
 # architect
-/.project
-/.settings
+.project
+.settings
 
 # roxygen files
 *.Rd
@@ -9,6 +9,7 @@
 *.tar
 *.Rcheck
 
-# testthat files, only for development
-
-/tinytest2JUnit/tests/
+development/
+presentation/
+Jenkinsfile
+Dockerfile
