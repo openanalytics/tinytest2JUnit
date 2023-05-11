@@ -35,7 +35,7 @@ jobs:
         if: always()
         run: |
           cat(readLines(file.path(getwd(), "results.xml")), sep = "")
-        shell: bash
+        shell: Rscript {0}
 
       - name: Test Report
         uses: dorny/test-reporter@v1
