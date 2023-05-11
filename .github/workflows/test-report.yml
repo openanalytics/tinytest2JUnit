@@ -11,11 +11,20 @@ jobs:
   build-test:  
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
     name: Build & Test
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v2     # checkout the repo
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: "./tinytest2JUnit"
       - run: |
           tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="tinytest2JUnit")),
            file = file.path(getwd(), "results.xml"))
