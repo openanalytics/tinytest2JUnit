@@ -1,0 +1,73 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-coverage
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: "./tinytest2JUnit"
+          extra-packages: any::covr
+          needs: coverage
+
+      - name: Test coverage
+        run: |
+          packageCoverage <- covr::codecov(
+            path = "./tinytest2JUnit",
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package")
+          )
+          covr::to_cobertura(packageCoverage)
+        shell: Rscript {0}
+
+      - name: Show testthat output
+        if: always()
+        run: |
+          ## --------------------------------------------------------------------
+          find ${{ runner.temp }}/package -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-test-failures
+          path: ${{ runner.temp }}/package
+          
+     - name: Code Coverage Report
+       uses: irongut/CodeCoverageSummary@v1.3.0
+       with:
+        filename: cobertura.xml
+        badge: true
+        fail_below_min: true
+        format: markdown
+        hide_branch_rate: false
+        hide_complexity: true
+        indicators: true
+        output: both
+        thresholds: '60 80'
+
+    - name: Add Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+        recreate: true
+        path: code-coverage-results.md
