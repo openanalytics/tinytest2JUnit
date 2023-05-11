@@ -21,7 +21,7 @@ jobs:
            file = file.path(getwd(), "results.xml"))
         shell: Rscript {0}
         
-     - name: Show tinytest output
+      - name: Show tinytest output
         if: always()
         run: |
           cat(readLines(file.path(getwd(), "results.xml")), sep = "")
