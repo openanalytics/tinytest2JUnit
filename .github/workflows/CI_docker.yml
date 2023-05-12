@@ -1,0 +1,27 @@
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: build-docker
+
+jobs:
+  checkout:
+    env:
+      GIT_CLONE_TOKEN: ${{ secrets.GH_PAT }}
+      REPOSITORY_NAME: "tinytest2JUnit"        
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Build an image
+        
+        run: |
+          docker build -t 'tinytest2junit' . 
+          docker run --workdir /workspace -v "$PWD:/workspace" -d --name app tinytest2junit cat -
+          docker exec  app R -q -e 'roxygen2::roxygenize("tinytest2JUnit")'   # command will be executed in the container in the /workspace directory (containing your repository)
+          docker exec -it app R CMD build tinytest2JUnit  
+          docker cp app:/workspace/my_ouptput.txt .
+
