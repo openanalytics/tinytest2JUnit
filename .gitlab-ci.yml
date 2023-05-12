@@ -1,4 +1,11 @@
+# followed examplte from https://www.r-bloggers.com/2019/02/developing-r-packages-with-usethis-and-gitlab-ci-part-iii/
 
+image: r-base
+
+variables:
+  R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
+  CHECK_DIR: "$CI_PROJECT_DIR/ci/logs"
+  BUILD_LOGS_DIR: "$CI_PROJECT_DIR/ci/logs/$CI_PROJECT_NAME.Rcheck"
 
 stages:		 # List of stages for jobs, and their order of execution
   - build
@@ -8,12 +15,14 @@ stages:		 # List of stages for jobs, and their order of execution
 build:       # This job runs in the build stage, which runs first.
   stage: build
   script:
-    - sh 'R CMD build tinytest2JUnit'
-    
-install:     
-  stage: build
-  script:
-    - r -e 'install.packages(list.files(".", "tinytest2JUnit_.*.tar.gz"), repos = NULL)'
+     - mkdir -p $R_LIBS_USER $BUILD_LOGS_DIR
+     - R -e 'devtools::install_deps(dep = T, lib = Sys.getenv("R_LIBS_USER"))'
+     - R -e 'devtools::check(check_dir = Sys.getenv("CHECK_DIR"))'
+     - R -e 'if (length(devtools::check_failures(path = Sys.getenv("BUILD_LOGS_DIR"), note = FALSE)) > 0) stop()'
+  cache:
+    paths:
+    - $R_LIBS_USER
+
 
 unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
@@ -24,7 +33,5 @@ unit-test-job:   # This job runs in the test stage.
 codecov:
   stage: test
   script:
-    - r -e 'covr::codecov(path = "./tinytest2JUnit",
-            quiet = FALSE,
-            clean = FALSE)'
+    - R -e 'covr::package_coverage(Sys.getenv("CI_PROJECT_DIR"))' 
 
