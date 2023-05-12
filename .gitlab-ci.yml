@@ -1,11 +1,6 @@
-image: $REGISTRY/registry/$CI_PROJECT_NAME
 
-variables:
-  REGISTRY: '196229073436.dkr.ecr.eu-west-1.amazonaws.com'
-  CI_PROJECT_NAME: 'tinytest2JUnit'
 
 stages:		 # List of stages for jobs, and their order of execution
-  - setup
   - build
   - test
 
