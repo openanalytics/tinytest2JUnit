@@ -29,20 +29,14 @@ jobs:
       - run: |
           tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="tinytest2JUnit")),
            file = file.path(getwd(), "results.xml"))
-        shell: Rscript {0}
-        
-      - name: Show tinytest output
-        if: always()
-        run: |
-          cat(readLines(file.path(getwd(), "results.xml")), sep = "")
-        shell: Rscript {0}
+        shell: Rscript {0}   
 
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()    # run this step even if previous step failed
         with:
-          name: JEST Tests            # Name of the check run which will be created
-          path: reports/jest-*.xml    # Path to test results
+          name: JUnit Tests           # Name of the check run which will be created
+          path: results.xml           # Path to test results
           reporter: jest-junit        # Format of test results
           
 

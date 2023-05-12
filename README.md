@@ -9,6 +9,7 @@
 
 A package to convert [tinytest](https://github.com/markvanderloo/tinytest) results to JUnit XML.
 This enables processing of test results by CI/CD systems such as GitLab Runner or Jenkins.
+Similar to the tinytest philosophy this packages comes with no-dependencies.
 
 ## Core idea:
 
