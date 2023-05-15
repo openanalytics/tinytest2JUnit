@@ -1,16 +1,27 @@
 # followed example from https://www.r-bloggers.com/2019/02/developing-r-packages-with-usethis-and-gitlab-ci-part-iii/
 image: openanalytics/r-base:latest 
 
+variables:
+R_LIBS_USER: "ci/lib"
+
+cache:
+  key: global-cache
+  paths:
+      - ci/lib/
+
+
 test:  
   script:
-    - apt-get update && apt-get install --no-install-recommends -y libxml2-dev
-    - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
-    - cp Rprofile.site /usr/lib/R/etc/
-    - echo "Installing dependencies"
-    - R -e 'install.packages(c("roxygen2","tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))'
-    - PKG="$(R CMD build . | grep -Eo '[[:alnum:]\._]+\.tar\.gz')"
-    - R CMD check ${PKG} --no-manual --no-build-vignettes
-    - R -e 'tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="tinytest2JUnit")),
-           file = file.path(getwd(), "results.xml"))'
+  #  - apt-get update && apt-get install --no-install-recommends -y libxml2-dev
+  #  - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
+  #  - cp Rprofile.site /usr/lib/R/etc/
+  #  - echo "Installing dependencies"
+  #  - R -e 'install.packages(c("roxygen2","tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))'
+  #  - PKG="$(R CMD build . | grep -Eo '[[:alnum:]\._]+\.tar\.gz')"
+  #  - R CMD check ${PKG} --no-manual --no-build-vignettes
+    - Rscript -e '.libPaths(c(Sys.getenv("R_LIBS_USER"), .libPaths()));remotes::install_deps(dependencies = TRUE, upgrade = "never")'
+    - curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && apt-get update -qq && apt-get -y install ./google-chrome-stable_current_amd64.deb &&  rm ./google-chrome-stable_current_amd64.deb
+    - Rscript -e '.libPaths(c(Sys.getenv("R_LIBS_USER"), .libPaths()));devtools::check()'
+    - R -e 'tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="tinytest2JUnit")), file = file.path(getwd(), "results.xml"))'
 
 
