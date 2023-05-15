@@ -89,28 +89,33 @@ jobs:
 
 ### Jenkins
 
+Extract:
+
 ```r
 
 stage('Install') {
-                            steps {
-                                sh 'R -q -e \'install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))''
-                            }
-                        }
-                        stage('Test and coverage') {
-                            steps {
-                                dir('PkgName') {
-                                    sh '''R -q -e \'code <- "tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"tinytest\\", package =\\"PkgName\\")), file = file.path(getwd(), \\"results.xml\\"))"
-                                   packageCoverage <- covr::package_coverage(type = "none", code = code)
-                                   cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
-                                   covr::to_cobertura(packageCoverage)\''''
-                                }
-                            }
-                            post {
-                                always {
-                                    dir('PkgName') {
-                                        junit 'results.xml'
-                                        cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
-                                    }
+   steps {
+      sh 'R -q -e \'install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))''
+     }
+}
+stage('Test and coverage') {
+   steps {
+      dir('PkgName') {
+         sh '''R -q -e \'code <- "tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"tinytest\\", package =\\"PkgName\\")), file = file.path(getwd(), \\"results.xml\\"))"
+         packageCoverage <- covr::package_coverage(type = "none", code = code)
+         cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
+         covr::to_cobertura(packageCoverage)\''''
+     }
+}
+post {
+   always {
+      dir('PkgName') {
+         junit 'results.xml'
+         cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+							}
+			}
+	}
+}
 ```
 
 ## Related
