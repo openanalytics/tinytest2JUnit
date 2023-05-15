@@ -17,8 +17,8 @@ build-job:
 test:  
   script:
     - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
+    - R -e 'install.packages(c("roxygen2","tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))'
     - R -e 'roxygen2::roxygenize("tinytest2JUnit")'
-    - R -e 'install.packages(c("tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))'
     - R CMD build . --no-build-vignettes --no-manual
     - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
     - R CMD check "${PKG_FILE_NAME}" --no-build-vignettes --no-manual
