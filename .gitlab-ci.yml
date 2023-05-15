@@ -1,9 +1,6 @@
-# followed examplte from https://www.r-bloggers.com/2019/02/developing-r-packages-with-usethis-and-gitlab-ci-part-iii/
+# followed example from https://www.r-bloggers.com/2019/02/developing-r-packages-with-usethis-and-gitlab-ci-part-iii/
+image: rocker/rstudio  
 
-variables:
-  R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
-  CHECK_DIR: "$CI_PROJECT_DIR/ci/logs"
-  BUILD_LOGS_DIR: "$CI_PROJECT_DIR/ci/logs/$CI_PROJECT_NAME.Rcheck"
 
 stages:		 # List of stages for jobs, and their order of execution
   - build
@@ -12,26 +9,20 @@ stages:		 # List of stages for jobs, and their order of execution
 
 build:       # This job runs in the build stage, which runs first.
   stage: build
-  image:
-    name: gcr.io/kaniko-project/executor:v1.5.2-debug
-    entrypoint: [""]
-  script:
-    - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
-      
-  rules:
-    - if: $CI_COMMIT_TAG
-  cache:
-    paths:
-    - $R_LIBS_USER
+
 
 
 unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
-    - R -e 'code <- "tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="tinytest2JUnit")), file = file.path(getwd(), "results.xml"))'
+  # force crayon  mode
+    - echo "options(crayon.enabled=TRUE)" > .Rprofile
+    - R -e 'install.packages(list.files(".", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org")))'
+    - R CMD build . --no-build-vignettes --no-manual
+    - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
+    - R CMD check "${PKG_FILE_NAME}" --no-build-vignettes --no-manual
+    - R -e 'tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="PkgName")),
+           file = file.path(getwd(), "results.xml"))'
 
 
 codecov:
