@@ -1,6 +1,14 @@
 # followed example from https://www.r-bloggers.com/2019/02/developing-r-packages-with-usethis-and-gitlab-ci-part-iii/
 image: rocker/rstudio  
 
+build-job:
+  stage: build
+  script:
+    - echo "Hello, $GITLAB_USER_LOGIN!"
+    - ls -al
+    - mkdir tinytest2JUnit
+    - cd tinytest2JUnit
+    - git clone https://gitlab.com/openanalytics/tinytest2junit.git
 test:  
   script:
     - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
