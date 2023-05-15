@@ -1,5 +1,5 @@
 # followed example from https://www.r-bloggers.com/2019/02/developing-r-packages-with-usethis-and-gitlab-ci-part-iii/
-image: rocker/rstudio  
+# image: rocker/rstudio  
 
 build-job:
   stage: build
