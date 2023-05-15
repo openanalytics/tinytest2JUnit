@@ -1,28 +1,15 @@
 # followed example from https://www.r-bloggers.com/2019/02/developing-r-packages-with-usethis-and-gitlab-ci-part-iii/
-image: rocker/rstudio  
-
-build-job:
-  stage: build
-  image:
-    name: gcr.io/kaniko-project/executor:v1.9.0-debug
-    entrypoint: [""]
-  script:
-    - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
-  rules:
-    - if: $CI_COMMIT_TAG
+image: openanalytics/r-base:latest 
 
 test:  
   script:
-    - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
     - apt-get update && apt-get install --no-install-recommends -y libxml2-dev
+    - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
+    - cp Rprofile.site /usr/lib/R/etc/
+    - echo "Installing dependencies"
     - R -e 'install.packages(c("roxygen2","tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))'
-    - R -e 'roxygen2::roxygenize("tinytest2JUnit")'
-    - R CMD build . --no-build-vignettes --no-manual
-    - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
-    - R CMD check "${PKG_FILE_NAME}" --no-build-vignettes --no-manual
+    - PKG="$(R CMD build . | grep -Eo '[[:alnum:]\._]+\.tar\.gz')"
+    - R CMD check ${PKG} --no-manual --no-build-vignettes
     - R -e 'tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="tinytest2JUnit")),
            file = file.path(getwd(), "results.xml"))'
 
