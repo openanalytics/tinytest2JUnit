@@ -1,32 +1,14 @@
 # followed example from https://www.r-bloggers.com/2019/02/developing-r-packages-with-usethis-and-gitlab-ci-part-iii/
 image: rocker/rstudio  
 
-
-stages:		 # List of stages for jobs, and their order of execution
-  - build
-  - test
-
-
-build:       # This job runs in the build stage, which runs first.
-  stage: build
-
-
-
-unit-test-job:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
+test:  
   script:
-  # force crayon  mode
-    - echo "options(crayon.enabled=TRUE)" > .Rprofile
+    - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
     - R -e 'install.packages(list.files(".", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org")))'
     - R CMD build . --no-build-vignettes --no-manual
     - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
     - R CMD check "${PKG_FILE_NAME}" --no-build-vignettes --no-manual
-    - R -e 'tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="PkgName")),
+    - R -e 'tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="tinytest2JUnit")),
            file = file.path(getwd(), "results.xml"))'
 
-
-codecov:
-  stage: test
-  script:
-    - R -e 'covr::package_coverage(Sys.getenv("CI_PROJECT_DIR"))' 
 
