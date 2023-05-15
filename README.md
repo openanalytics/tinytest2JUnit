@@ -95,7 +95,7 @@ Extract:
 
 stage('Install') {
    steps {
-      sh 'R -q -e \'install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))''
+      sh 'R -q -e \'install.packages(list.files(".", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))\''
      }
 }
 stage('Test and coverage') {
@@ -112,8 +112,8 @@ post {
       dir('PkgName') {
          junit 'results.xml'
          cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
-							}
 			}
+		}
 	}
 }
 ```
