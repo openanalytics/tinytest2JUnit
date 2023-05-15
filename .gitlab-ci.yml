@@ -19,6 +19,7 @@ test:
   #  - R -e 'install.packages(c("roxygen2","tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))'
   #  - PKG="$(R CMD build . | grep -Eo '[[:alnum:]\._]+\.tar\.gz')"
   #  - R CMD check ${PKG} --no-manual --no-build-vignettes
+    - mkdir -p -m777 $R_LIBS_USER
     - Rscript -e '.libPaths(c(Sys.getenv("R_LIBS_USER"), .libPaths()));remotes::install_deps(dependencies = TRUE, upgrade = "never")'
     - curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && apt-get update -qq && apt-get -y install ./google-chrome-stable_current_amd64.deb &&  rm ./google-chrome-stable_current_amd64.deb
     - Rscript -e '.libPaths(c(Sys.getenv("R_LIBS_USER"), .libPaths()));devtools::check()'
