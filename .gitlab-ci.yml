@@ -27,7 +27,7 @@ build:
     
 test:  
   script:
-     - apt-get update && apt-get install --no-install-recommends -y libxml2-dev
+    - apt-get update && apt-get install --no-install-recommends -y libxml2-dev
     - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
     - echo "Installing dependencies"
     - R -e 'install.packages(c("roxygen2","dplyr", "tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))'
