@@ -86,6 +86,8 @@ jobs:
           reporter: java-junit        # Format of test results
 ```
 
+Download this file [here](./.github/workflows/test-report.yml).
+
 ### Gitlab CI/CD
 
 ```yaml
@@ -112,9 +114,11 @@ test:
 
 ```
 
+Download this file [here](./.gitlab-ci.yml).
+
 ### Jenkins
 
-Extract:
+Extract from a full Jenkinsfile (replace `PkgName` with the name of your package):
 
 ```
 stages {
@@ -164,6 +168,8 @@ stages {
 	      }
       }
 ```
+
+Download the full Jenkinsfile [here](./Jenkinsfile).
 
 ## Related
 
