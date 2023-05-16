@@ -11,7 +11,7 @@ A package to convert [tinytest](https://github.com/markvanderloo/tinytest) resul
 This enables processing of test results by CI/CD systems such as GitLab Runner or Jenkins.
 Similar to the tinytest philosophy this packages comes with no-dependencies.
 
-## Core idea:
+## Core idea
 
 * Extract needed info from a tinytest S3 result object (output of `tinytest::run_test_dir()`)
 * Convert the output to JUnit XML format as described in this reference: https://llg.cubic.org/docs/junit/
