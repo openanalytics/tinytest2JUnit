@@ -1,5 +1,5 @@
 
-# Tinytest2JUnit
+# tinytest2JUnit
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml)

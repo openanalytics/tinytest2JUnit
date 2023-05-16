@@ -17,6 +17,3 @@
 \description{
 Print method for XMLtag class.
 }
-\author{
-Lennart Tuijnder
-}

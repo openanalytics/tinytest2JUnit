@@ -27,8 +27,5 @@ In case of overwrite = FALSE and the file already exists an error is thrown.
 }
 
 \seealso{
-The JUnit-xml report format: https://llg.cubic.org/docs/junit/
-}
-\author{
-Lennart Tuijnder
+The JUnit XML report format: https://llg.cubic.org/docs/junit/
 }

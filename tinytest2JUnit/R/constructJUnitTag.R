@@ -11,7 +11,6 @@
 #' @param testResults [tinytest::tinytests]-object to convert into a JUnit xml object.
 #'   Usually the result of calling [tinytest::test_package()].
 #' @return `XMLtag`: with tag-name = "testsuites". This is the root of the JUnit xml document.
-#' @author Lennart Tuijnder
 constructTestsuitesTag <- function(testResults) {
  
   stopifnot(inherits(testResults, "tinytests"))
@@ -43,7 +42,6 @@ constructTestsuitesTag <- function(testResults) {
 #' 
 #' @param testResultsSingleFile `tinytests` with all test results of a specified test file.
 #' @return `XMLtag`: with tag-name = "testsuite" and contains all the tests results of the file.
-#' @author Lennart Tuijnder
 constructTestsuiteTag <- function(testResultsSingleFile) {
   
   stopifnot(inherits(testResultsSingleFile, "tinytests"))
@@ -71,7 +69,6 @@ constructTestsuiteTag <- function(testResultsSingleFile) {
 #' 
 #' @param tinytest a [tinytest::tinytest()]-object representing an individual test case. 
 #' @return `XMLtag`: with tag-name = "tinytest" and contains all the tests results of the file.
-#' @author Lennart Tuijnder
 constructTestcaseTag <- function(tinytest) {
   
   stopifnot(inherits(tinytest, "tinytest"))

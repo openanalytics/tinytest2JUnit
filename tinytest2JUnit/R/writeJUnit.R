@@ -10,8 +10,7 @@
 #'  By default TRUE.
 #' 
 #' @return `invisible: TRUE`.
-#' @author Lennart Tuijnder
-#' @seealso The JUnit-xml report format: https://llg.cubic.org/docs/junit/
+#' @seealso The JUnit XML report format: https://llg.cubic.org/docs/junit/
 #' 
 #' @section Errors:
 #' In case of overwrite = FALSE and the file already exists an error is thrown.

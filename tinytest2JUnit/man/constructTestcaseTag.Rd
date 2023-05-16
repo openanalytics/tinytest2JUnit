@@ -15,6 +15,3 @@ constructTestcaseTag(tinytest)
 \description{
 Construct JUnit testcase tag based on a single tinytest results.
 }
-\author{
-Lennart Tuijnder
-}

@@ -22,6 +22,3 @@ a \code{XMLtag}-object.
 Create a list object that roughly mimics the behaviour of a simplistic xml tag element.
 Supported are xml tag-name, tag-attributes and tag-content.
 }
-\author{
-Lennart Tuijnder
-}

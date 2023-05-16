@@ -11,7 +11,6 @@
 #'  next to each other in the tag.
 #' 
 #' @return a `XMLtag`-object. 
-#' @author Lennart Tuijnder
 tag <- function(name, attributes = list(), content = list()) {
   stopifnot(is.list(attributes), is.list(content), is.null(names(content)))
   if (length(attributes) > 0) stopifnot(!is.null(names(attributes)), all(nchar(names(attributes))>0))
@@ -27,7 +26,6 @@ tag <- function(name, attributes = list(), content = list()) {
 #'   tag is automatically indented with 1 level.
 #' @param ... to ignore
 #' @return `character(1)` vector of the formatted XML tag. 
-#' @author Lennart Tuijnder
 #' @export
 format.XMLtag <- function(x, level = 0, ...) {
   n_spaces_tag <- strrep(" ", 2 * level)
@@ -57,7 +55,6 @@ format.XMLtag <- function(x, level = 0, ...) {
 #' @param x a `XMLtag`-object
 #' @param ... to be ignored
 #' @return `invisibly` the string that was printed to stdout.
-#' @author Lennart Tuijnder
 #' @export
 print.XMLtag <- function(x, ...) {
   str <- format(x)
