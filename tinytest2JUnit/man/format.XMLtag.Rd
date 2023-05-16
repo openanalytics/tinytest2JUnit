@@ -21,5 +21,5 @@ tag is automatically indented with 1 level.}
 Format S3 method for the \code{XMLtag}-class
 }
 \author{
-ltuijnder
+Lennart Tuijnder
 }
