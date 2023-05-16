@@ -1,0 +1,27 @@
+# followed example from https://www.r-bloggers.com/2019/02/developing-r-packages-with-usethis-and-gitlab-ci-part-iii/
+image: r-base:latest 
+
+cache:
+  key: global-cache
+   
+test:  
+  script:
+    - apt-get update && apt-get install --no-install-recommends -y libxml2-dev
+    - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
+    - echo "Installing dependencies"
+    - R -e 'install.packages(c("roxygen2","dplyr", "tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))'
+    - R -e 'roxygen2::roxygenize("tinytest2JUnit")'
+    - R CMD build tinytest2JUnit
+    - R CMD check tinytest2JUnit_*.tar.gz --no-manual --no-build-vignettes
+    - R -e 'install.packages(list.files(".", "tinytest2JUnit_.*.tar.gz"), repos = NULL)'
+    - R -e 'tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="tinytest2JUnit")), file = file.path(getwd(), "results.xml"))'
+  artifacts:
+    when: always
+    paths:
+      - results.xml
+    reports:
+      junit: results.xml
+
+    
+
+
