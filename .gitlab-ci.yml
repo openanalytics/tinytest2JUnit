@@ -6,7 +6,7 @@ cache:
    
 test:  
   script:
-    - apt-get update && apt-get install --no-install-recommends -y libxml2-dev xml2 library # needed for roxygen2
+    - apt-get update && apt-get install --no-install-recommends -y libxml2-dev # xml2 library needed for roxygen2
     - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
     - echo "Installing dependencies"
     - R -e 'install.packages("roxygen2" repos = "https://cloud.r-project.org"))'
