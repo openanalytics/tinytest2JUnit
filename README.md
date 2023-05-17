@@ -1,5 +1,5 @@
 
-# Tinytest2JUnit
+# tinytest2JUnit
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml)
@@ -11,10 +11,10 @@ A package to convert [tinytest](https://github.com/markvanderloo/tinytest) resul
 This enables processing of test results by CI/CD systems such as GitLab Runner or Jenkins.
 Similar to the tinytest philosophy this packages comes with no-dependencies.
 
-## Core idea:
+## Core idea
 
 * Extract needed info from a tinytest S3 result object (output of `tinytest::run_test_dir()`)
-* Format the output to JUnit.xml specs as described in this reference: https://llg.cubic.org/docs/junit/
+* Convert the output to JUnit XML format as described in this reference: https://llg.cubic.org/docs/junit/
 
 ## Install
 
@@ -26,19 +26,18 @@ install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.e
 
 ## Basic Usage
 
-The `writeJUnit()` function excepts any object of class tinytests and converts it to a JUnit XML file that can be interpreted by CI/CD systems.
+The `writeJUnit()` function accepts any object of class tinytests and converts it to a JUnit XML file that can be interpreted by CI/CD systems.
 
 ```r
 testresults <- tinytest::run_test_dir("pkgdir")
 writeJUnit(testresults, file = "output.xml", overwrite = TRUE)
-
 ```
 
 ## Example files for CI/CD integration
 
-### Github YAML
+### Github Actions
 
-```r
+```yaml
 on:
   push:
   pull_request:
@@ -87,9 +86,11 @@ jobs:
           reporter: java-junit        # Format of test results
 ```
 
-### Gitlab-ci.yml
+Download this file [here](./.github/workflows/test-report.yml).
 
-```r
+### Gitlab CI/CD
+
+```yaml
 
 image: r-base:latest 
 
@@ -113,11 +114,13 @@ test:
 
 ```
 
-### Jenkinsfile
+Download this file [here](./.gitlab-ci.yml).
 
-Extract:
+### Jenkins
 
-```r
+Extract from a full Jenkinsfile (replace `PkgName` with the name of your package):
+
+```
 stages {
    stage('PkgName') {
       stages {
@@ -166,10 +169,12 @@ stages {
       }
 ```
 
+Download the full Jenkinsfile [here](./Jenkinsfile).
+
 ## Related
 
 * tinytest package: https://github.com/markvanderloo/tinytest
 * JUnit reporter in `testthat`: https://testthat.r-lib.org/reference/JunitReporter.html
 * test reporter for Github Action: https://github.com/dorny/test-reporter
 
-**(c) Copyright Open Analytics NV, 2012-2023 - Apache License 2.0**
+**(c) Copyright Open Analytics NV, 2022-2023 - Apache License 2.0**
