@@ -37,6 +37,8 @@ writeJUnit(testresults, file = "output.xml", overwrite = TRUE)
 
 ### Github Actions
 
+`PkgName` needs to be replaced with the name of your package
+
 ```yaml
 on:
   push:
@@ -89,6 +91,8 @@ jobs:
 Download this file [here](./.github/workflows/test-report.yml).
 
 ### Gitlab CI/CD
+
+`PkgName` needs to be replaced with the name of your package
 
 ```yaml
 
