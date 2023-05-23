@@ -1,12 +1,12 @@
 Package: tinytest2JUnit
 Type: Package
 Title: Convert Tinytest Output to JUnit XML
-Version: 0.1.1
+Version: 0.1.2
 Maintainer: Anne-Katrin Hess <anne-katrin.hess@openanalytics.eu>
 Authors@R: c(
 	person(given = "Anne-Katrin", family = "Hess", email = "anne-katrin.hess@openanalytics.eu", role = c("aut", "cre")),
 	person(given ="Lennart", family = "Tuijnder", email = "lennart.tuijnder@openanalytics.eu", role = c("aut")))
-Description: Convert tinytest test result output to JUnit XML for usage in e.g. a Jenkins pipeline. 
+Description: Convert tinytest results output to JUnit XML for usage by CI/CD systems. 
 Suggests: 
 	tinytest
 License: GPL-3 + file LICENSE
