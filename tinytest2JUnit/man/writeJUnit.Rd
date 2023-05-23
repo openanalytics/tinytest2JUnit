@@ -23,9 +23,10 @@ Write the \code{\link[tinytest:tinytests]{tinytest::tinytests()}}-object to a JU
 }
 \section{Side-effects}{
 
-Side effects are registered as a tests in the JUnit output hand have been given a status
-"SIDE-EFFECT". They are however not considered as failures and would thus not stop a pipeline.
-Similarly, tinytest would does not R CMD Check crash based on a monitored side-effect.
+Side effects are registered as a tests in the JUnit output and have been given a status
+"SIDE-EFFECT". The call and diff is also returned in the standard-output of the testcase tag.
+
+They are however not considered as failures and would thus not stop a pipeline.
 }
 
 \section{Errors}{
