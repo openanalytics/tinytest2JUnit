@@ -1,7 +1,12 @@
 
 #' Write the results of a `tinytests`-object into JUnit xml report.
 #' 
-#' Write the [tinytest::tinytests()]-object to a JUnit XML reporting file.  
+#' Write the [tinytest::tinytests()]-object to a JUnit XML reporting file.
+#' 
+#' @section Side-effects:
+#' Side effects are registered as a tests in the JUnit output hand have been given a status 
+#' "SIDE-EFFECT". They are however not considered as failures and would thus not stop a pipeline.
+#' Similarly, tinytest would does not R CMD Check crash based on a monitored side-effect.
 #' 
 #' @param tinytests `tinytests` object to convert to JUnit xml.
 #' @param file `character(1)`: Full file path to the .xml file to write the JUnit xml to. 
