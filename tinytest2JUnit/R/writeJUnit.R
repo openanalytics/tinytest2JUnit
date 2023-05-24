@@ -1,7 +1,7 @@
 
-#' Write the results of a `tinytests`-object into JUnit xml report.
+#' Write the results of a `tinytest`-object into JUnit xml report.
 #' 
-#' Write the [tinytest::tinytests()]-object to a JUnit XML reporting file.
+#' Write the [tinytest::tinytest()]-object to a JUnit XML reporting file.
 #' 
 #' @section Side-effects:
 #' Side effects are registered as a tests in the JUnit output and have been given a status 
@@ -16,7 +16,7 @@
 #'  By default TRUE.
 #' 
 #' @return `invisible: TRUE`.
-#' @seealso The JUnit XML report format: https://llg.cubic.org/docs/junit/
+#' @seealso The JUnit XML report format:  \url{https://llg.cubic.org/docs/junit/}
 #' 
 #' @section Errors:
 #' In case of overwrite = FALSE and the file already exists an error is thrown.
