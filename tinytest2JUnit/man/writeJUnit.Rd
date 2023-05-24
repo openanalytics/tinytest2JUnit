@@ -21,6 +21,14 @@ By default TRUE.}
 \description{
 Write the \code{\link[tinytest:tinytests]{tinytest::tinytests()}}-object to a JUnit XML reporting file.
 }
+\section{Side-effects}{
+
+Side effects are registered as a tests in the JUnit output and have been given a status
+"SIDE-EFFECT". The call and diff is also returned in the standard-output of the testcase tag.
+
+They are however not considered as failures and would thus not stop a pipeline.
+}
+
 \section{Errors}{
 
 In case of overwrite = FALSE and the file already exists an error is thrown.

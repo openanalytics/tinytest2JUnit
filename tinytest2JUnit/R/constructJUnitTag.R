@@ -21,7 +21,7 @@ constructTestsuitesTag <- function(testResults) {
   attributes <- list(
     name = "tinytest results", 
     tests = length(vctFailed), 
-    failures = sum(vctFailed)
+    failures = sum(vctFailed, na.rm = TRUE)
   )
   
   duration <- attr(testResults, "duration")
@@ -51,7 +51,7 @@ constructTestsuiteTag <- function(testResultsSingleFile) {
   attributes <- list(
     name = attr(testResultsSingleFile[[1]], "file"),  
     tests = length(vctFailed), 
-    failures = sum(vctFailed)
+    failures = sum(vctFailed, na.rm = TRUE)
   )
   
   tag(
@@ -82,17 +82,11 @@ constructTestcaseTag <- function(tinytest) {
   }
   attributes$name <- nameTestcase
   
-  if (tinytest) {
+  if (isTRUE(tinytest)) {
     attributes$status <- "PASSED"
     return(tag("testcase", attributes = attributes))
   }
-  
-  attributes$status <- "FAILED"
-  
-  # Construct the failure tag
-  failureTagAttr <- list(type = attr(tinytest, "short"))
-  if (!is.na(attr(tinytest, "info"))) failureTagAttr$message <- attr(tinytest, "info")
-  
+    
   callCharVect <- utils::capture.output(print(attr(tinytest, "call")))
   call <- paste0('call| ', callCharVect)
   if (!is.na(attr(tinytest, "diff"))) {
@@ -100,16 +94,32 @@ constructTestcaseTag <- function(tinytest) {
   } else {
     diff <- character(0L)
   }
-  failureTagContent <- paste0(c(call, diff), collapse = "\n")
+  description <- paste0(c(call, diff), collapse = "\n")
   
-  failureTag <- tag(
-    name = "failure",
-    attributes = failureTagAttr,
-    content = list(failureTagContent)
-  )
-  tag(
+  if (isFALSE(tinytest)) {
+    attributes$status <- "FAILED"
+    failureTagAttr <- list(type = attr(tinytest, "short"))
+    if (!is.na(attr(tinytest, "info"))) failureTagAttr$message <- attr(tinytest, "info")
+    
+    failureTag <- tag(
+      name = "failure",
+      attributes = failureTagAttr,
+      content = list(description)
+    )
+    testcaseTag <- tag(
+      name = "testcase",
+      attributes = attributes,
+      content = list(failureTag)
+    )
+    return(testcaseTag)
+  }
+  
+  # tinytest = NA = Side effect:
+  attributes$status <- "SIDE-EFFECT"
+  testcaseTag <- tag(
     name = "testcase",
     attributes = attributes,
-    content = list(failureTag)
+    content = list(tag(name="system-out",content=list(description)))
   )
+  return(testcaseTag)
 }
