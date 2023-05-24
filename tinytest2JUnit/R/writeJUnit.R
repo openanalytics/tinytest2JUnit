@@ -1,7 +1,7 @@
 
-#' Write the results of a `tinytest`-object into JUnit xml report.
+#' Write the results of a `tinytests`-object into JUnit xml report.
 #' 
-#' Write the [tinytest::tinytest()]-object to a JUnit XML reporting file.
+#' Write the `tinytests`-object to a JUnit XML reporting file.
 #' 
 #' @section Side-effects:
 #' Side effects are registered as a tests in the JUnit output and have been given a status 
@@ -9,7 +9,7 @@
 #' 
 #' They are however not considered as failures and would thus not stop a pipeline.
 #' 
-#' @param tinytests `tinytests` object to convert to JUnit xml.
+#' @param tinytests `tinytests`-object to convert to JUnit xml.
 #' @param file `character(1)`: Full file path to the .xml file to write the JUnit xml to. 
 #'  Example: "/home/user/documents/results.xml".
 #' @param overwrite `logical(1)`: should the file be overwritten if it already exist? 

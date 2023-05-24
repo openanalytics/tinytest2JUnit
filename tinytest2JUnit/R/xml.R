@@ -1,13 +1,13 @@
 
 #' XML tag
 #' 
-#' Create a list object that roughly mimics the behaviour of a simplistic xml tag element. 
-#' Supported are xml tag-name, tag-attributes and tag-content.
+#' Create a list object that roughly mimics the behaviour of a simplistic XML tag element. 
+#' Supported are XML tag-name, tag-attributes and tag-content.
 #' 
 #' @param name `character(1)` specifying the name of the tag.
-#' @param attributes `named-list` being the xml attributes. 
+#' @param attributes `named-list` being the XML attributes. 
 #'    Names = attribute names, Values = attribute value.
-#' @param content `unnamed-list` being the content xml-tag. Each element is placed 
+#' @param content `unnamed-list` being the content XML-tag. Each element is placed 
 #'  next to each other in the tag.
 #' 
 #' @return a `XMLtag`-object. 
