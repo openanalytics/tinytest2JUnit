@@ -5,8 +5,8 @@ pipeline {
     }
     environment {
         IMAGE = 'tinytest2junit'
-        NS = 'tinytest2junit'
-        REGISTRY = '196229073436.dkr.ecr.eu-west-1.amazonaws.com'
+        NS = 'shared'
+        REGISTRY = 'registry.openanalytics.eu'
         TAG = sh(returnStdout: true, script: "echo $BRANCH_NAME | sed -e 's/[A-Z]/\\L&/g' -e 's/[^a-z0-9._-]/./g'").trim()
         REGION = 'eu-west-1'
         NOT_CRAN = 'true'
@@ -32,7 +32,7 @@ pipeline {
                             secretName: registry-robot
                       containers:
                       - name: kaniko
-                        image: gcr.io/kaniko-project/executor:v1.5.2-debug
+                        image: gcr.io/kaniko-project/executor:v1.9.1-debug
                         env:
                         - name: AWS_SDK_LOAD_CONFIG
                           value: "true"
@@ -45,32 +45,17 @@ pipeline {
                               memory: "1024Mi"
                           limits:
                               memory: "4096Mi"
-                              ephemeral-storage: 2Gi
+                              ephemeral-storage: "4Gi"
                         imagePullPolicy: Always
                         volumeMounts:
                           - name: kaniko-dockerconfig
                             mountPath: /kaniko/.docker/config.json
                             subPath: .dockerconfigjson
-                      - name: aws-cli
-                        image: amazon/aws-cli:2.1.33
-                        command:
-                        - cat
-                        tty: true
-                        resources:
-                          requests:
-                              memory: "100Mi"
-                          limits:
-                              memory: "1024Mi"'''
+                    '''
                     defaultContainer 'kaniko'
                 }
             }
             steps {
-                container('aws-cli') {
-                    sh """aws --region ${env.REGION} ecr describe-repositories \
-                    	--repository-names ${env.NS}/${env.IMAGE} \
-                    	|| aws --region ${env.REGION} ecr create-repository \
-                    	--repository-name ${env.NS}/${env.IMAGE}"""
-                }
                 container('kaniko') {
                     sh """/kaniko/executor \
                     	-v info \
@@ -91,18 +76,20 @@ pipeline {
                     apiVersion: v1
                     kind: Pod
                     spec:
+                      imagePullSecrets:
+                        - name: registry-robot
                       containers:
-                      - name: r
-                        image: ${env.REGISTRY}/${env.NS}/${env.IMAGE}:${env.TAG}
-                        command: 
-                        - cat
-                        tty: true
-                        imagePullPolicy: Always
-                      - name: rdepot-cli
-                        command:
-                        - cat
-                        tty: yes
-                        image: openanalytics/rdepot-cli:latest"""
+                        - name: r
+                          image: ${env.REGISTRY}/${env.NS}/${env.IMAGE}:${env.TAG}
+                          command: 
+                            - cat
+                          tty: true
+                          imagePullPolicy: Always
+                        - name: rdepot-cli
+                          command:
+                          - cat
+                          tty: yes
+                          image: openanalytics/rdepot-cli:latest"""
                     defaultContainer 'r'
                 }
             }

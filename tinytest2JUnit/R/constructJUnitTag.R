@@ -8,21 +8,20 @@
 #' @details
 #' Reference for JUnit XML format: https://llg.cubic.org/docs/junit/
 #' 
-#' @param testResults \link[tinytest]{tinytests}-object to convert into a JUnit xml object.
+#' @param testResults [tinytest::tinytests]-object to convert into a JUnit xml object.
 #'   Usually the result of calling [tinytest::test_package()].
 #' @return `XMLtag`: with tag-name = "testsuites". This is the root of the JUnit xml document.
-#' @author ltuijnder
-constructTestsuitesTag <- function(testResults){
+constructTestsuitesTag <- function(testResults) {
  
   stopifnot(inherits(testResults, "tinytests"))
   
   vctTestFiles <- vapply(testResults, function(tinytest) attr(tinytest, "file"), FUN.VALUE = character(1))
   vctFailed <- !vapply(testResults, function(tinytest) tinytest, FUN.VALUE = logical(1))
   
-  attributes = list(
+  attributes <- list(
     name = "tinytest results", 
     tests = length(vctFailed), 
-    failures = sum(vctFailed)
+    failures = sum(vctFailed, na.rm = TRUE)
   )
   
   duration <- attr(testResults, "duration")
@@ -31,8 +30,8 @@ constructTestsuitesTag <- function(testResults){
   tag(
     name = "testsuites",
     attributes = attributes,
-    content = lapply(X = unique(vctTestFiles),  FUN = function(file){
-        constructTestsuiteTag(testResults[vctTestFiles==file])
+    content = lapply(X = unique(vctTestFiles), FUN = function(file) {
+        constructTestsuiteTag(testResults[vctTestFiles == file])
       })
   )
 }
@@ -43,17 +42,16 @@ constructTestsuitesTag <- function(testResults){
 #' 
 #' @param testResultsSingleFile `tinytests` with all test results of a specified test file.
 #' @return `XMLtag`: with tag-name = "testsuite" and contains all the tests results of the file.
-#' @author ltuijnder
-constructTestsuiteTag <- function(testResultsSingleFile){
+constructTestsuiteTag <- function(testResultsSingleFile) {
   
   stopifnot(inherits(testResultsSingleFile, "tinytests"))
   
-  vctFailed = !vapply(testResultsSingleFile, function(tinytest) tinytest, FUN.VALUE = logical(1))
+  vctFailed <- !vapply(testResultsSingleFile, function(tinytest) tinytest, FUN.VALUE = logical(1))
   
-  attributes = list(
+  attributes <- list(
     name = attr(testResultsSingleFile[[1]], "file"),  
     tests = length(vctFailed), 
-    failures = sum(vctFailed)
+    failures = sum(vctFailed, na.rm = TRUE)
   )
   
   tag(
@@ -71,48 +69,57 @@ constructTestsuiteTag <- function(testResultsSingleFile){
 #' 
 #' @param tinytest a [tinytest::tinytest()]-object representing an individual test case. 
 #' @return `XMLtag`: with tag-name = "tinytest" and contains all the tests results of the file.
-#' @author ltuijnder
-constructTestcaseTag <- function(tinytest){
+constructTestcaseTag <- function(tinytest) {
   
   stopifnot(inherits(tinytest, "tinytest"))
   
   attributes <- list()
   
   # Name = filename + line number
-  nameTestcase = paste0(attr(tinytest, "file"),": L",attr(tinytest, "fst"))
-  if(attr(tinytest, "fst") != attr(tinytest, "lst")){
+  nameTestcase <- paste0(attr(tinytest, "file"), ": L", attr(tinytest, "fst"))
+  if (attr(tinytest, "fst") != attr(tinytest, "lst")) {
     nameTestcase <- paste0(nameTestcase, "-L", attr(tinytest, "lst"))
   }
   attributes$name <- nameTestcase
   
-  if(tinytest){
+  if (isTRUE(tinytest)) {
     attributes$status <- "PASSED"
     return(tag("testcase", attributes = attributes))
   }
-  
-  attributes$status <- "FAILED"
-  
-  # Construct the failure tag
-  failureTagAttr <- list(type = attr(tinytest, "short"))
-  if(!is.na(attr(tinytest, "info"))) failureTagAttr$message <- attr(tinytest, "info")
-  
-  callCharVect <- utils::capture.output(print( attr(tinytest, "call")))
+    
+  callCharVect <- utils::capture.output(print(attr(tinytest, "call")))
   call <- paste0('call| ', callCharVect)
-  if(!is.na(attr(tinytest, "diff"))){
+  if (!is.na(attr(tinytest, "diff"))) {
     diff <- paste0('diff| ', attr(tinytest, "diff"))
-  }else{
-    diff = character(0L)
+  } else {
+    diff <- character(0L)
   }
-  failureTagContent <- paste0(c(call, diff), collapse = "\n")
+  description <- paste0(c(call, diff), collapse = "\n")
   
-  failureTag <- tag(
-    name = "failure",
-    attributes = failureTagAttr,
-    content = list(failureTagContent)
-  )
-  tag(
+  if (isFALSE(tinytest)) {
+    attributes$status <- "FAILED"
+    failureTagAttr <- list(type = attr(tinytest, "short"))
+    if (!is.na(attr(tinytest, "info"))) failureTagAttr$message <- attr(tinytest, "info")
+    
+    failureTag <- tag(
+      name = "failure",
+      attributes = failureTagAttr,
+      content = list(description)
+    )
+    testcaseTag <- tag(
+      name = "testcase",
+      attributes = attributes,
+      content = list(failureTag)
+    )
+    return(testcaseTag)
+  }
+  
+  # tinytest = NA = Side effect:
+  attributes$status <- "SIDE-EFFECT"
+  testcaseTag <- tag(
     name = "testcase",
     attributes = attributes,
-    content = list(failureTag)
+    content = list(tag(name="system-out",content=list(description)))
   )
+  return(testcaseTag)
 }

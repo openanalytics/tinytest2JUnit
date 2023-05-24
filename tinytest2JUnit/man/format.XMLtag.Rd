@@ -20,6 +20,3 @@ tag is automatically indented with 1 level.}
 \description{
 Format S3 method for the \code{XMLtag}-class
 }
-\author{
-ltuijnder
-}

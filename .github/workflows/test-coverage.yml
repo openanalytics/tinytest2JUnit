@@ -34,6 +34,7 @@ jobs:
           )
         shell: Rscript {0}
 
+<<<<<<< HEAD
       - name: Show testthat output
         if: always()
         run: |
@@ -47,5 +48,7 @@ jobs:
         with:
           name: coverage-test-failures
           path: ${{ runner.temp }}/package
+=======
+>>>>>>> master
           
 

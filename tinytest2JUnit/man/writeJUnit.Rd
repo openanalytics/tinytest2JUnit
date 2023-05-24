@@ -10,7 +10,7 @@ writeJUnit(tinytests, file, overwrite = TRUE)
 \item{tinytests}{\code{tinytests} object to convert to JUnit xml.}
 
 \item{file}{\code{character(1)}: Full file path to the .xml file to write the JUnit xml to.
-Example: "/home/ltuijnder/documents/results.xml".}
+Example: "/home/user/documents/results.xml".}
 
 \item{overwrite}{\code{logical(1)}: should the file be overwritten if it already exist?
 By default TRUE.}
@@ -21,14 +21,19 @@ By default TRUE.}
 \description{
 Write the \code{\link[tinytest:tinytests]{tinytest::tinytests()}}-object to a JUnit XML reporting file.
 }
+\section{Side-effects}{
+
+Side effects are registered as a tests in the JUnit output and have been given a status
+"SIDE-EFFECT". The call and diff is also returned in the standard-output of the testcase tag.
+
+They are however not considered as failures and would thus not stop a pipeline.
+}
+
 \section{Errors}{
 
 In case of overwrite = FALSE and the file already exists an error is thrown.
 }
 
 \seealso{
-The JUnit-xml report format: https://llg.cubic.org/docs/junit/
-}
-\author{
-ltuijnder
+The JUnit XML report format: https://llg.cubic.org/docs/junit/
 }

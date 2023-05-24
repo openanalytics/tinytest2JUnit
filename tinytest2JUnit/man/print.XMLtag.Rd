@@ -15,8 +15,5 @@
 \code{invisibly} the string that was printed to stdout.
 }
 \description{
-print method for XMLtag class.
-}
-\author{
-ltuijnder
+Print method for XMLtag class.
 }

@@ -1,5 +1,15 @@
 
+<<<<<<< HEAD
 # Tinytest2JUnit
+=======
+# tinytest2JUnit
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml)
+<!-- badges: end -->
+
+## Overview
+>>>>>>> master
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml)
@@ -11,10 +21,17 @@ A package to convert [tinytest](https://github.com/markvanderloo/tinytest) resul
 This enables processing of test results by CI/CD systems such as GitLab Runner or Jenkins.
 Similar to the tinytest philosophy this packages comes with no-dependencies.
 
+<<<<<<< HEAD
 ## Core idea:
 
 * Extract needed info from a tinytest S3 result object (output of `tinytest::run_test_dir()`)
 * Format the output to JUnit.xml specs as described in this reference: https://llg.cubic.org/docs/junit/
+=======
+## Core idea
+
+* Extract needed info from a tinytest S3 result object (output of `tinytest::run_test_dir()`)
+* Convert the output to JUnit XML format as described in this reference: https://llg.cubic.org/docs/junit/
+>>>>>>> master
 
 ## Install
 
@@ -26,11 +43,16 @@ install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.e
 
 ## Basic Usage
 
+<<<<<<< HEAD
 The `writeJUnit()` function excepts any object of class tinytests and converts it to a JUnit XML file that can be interpreted by CI/CD systems.
+=======
+The `writeJUnit()` function accepts any object of class tinytests and converts it to a JUnit XML file that can be interpreted by CI/CD systems.
+>>>>>>> master
 
 ```r
 testresults <- tinytest::run_test_dir("pkgdir")
 writeJUnit(testresults, file = "output.xml", overwrite = TRUE)
+<<<<<<< HEAD
 
 ```
 
@@ -39,6 +61,17 @@ writeJUnit(testresults, file = "output.xml", overwrite = TRUE)
 ### Github
 
 ```r
+=======
+```
+
+## Example files for CI/CD integration
+
+### Github Actions
+
+`PkgName` needs to be replaced with the name of your package
+
+```yaml
+>>>>>>> master
 on:
   push:
   pull_request:
@@ -87,6 +120,7 @@ jobs:
           reporter: java-junit        # Format of test results
 ```
 
+<<<<<<< HEAD
 ### Jenkins
 
 Extract:
@@ -117,6 +151,94 @@ post {
 	}
 }
 ```
+=======
+Download this file [here](./.github/workflows/test-report.yml).
+
+### Gitlab CI/CD
+
+`PkgName` needs to be replaced with the name of your package
+
+```yaml
+
+image: r-base:latest 
+
+test:  
+  script:
+    - apt-get update && apt-get install --no-install-recommends -y libxml2-dev # xml2 library needed for roxygen2
+    - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
+    - echo "Installing dependencies"
+    - R -e 'install.packages(c("roxygen2", "tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/","https://cloud.r-project.org"))'
+    - R -e 'roxygen2::roxygenize("PkgName")'
+    - R CMD build PkgName
+    - R CMD check PkgName_*.tar.gz --no-manual --no-build-vignettes
+    - R -e 'install.packages("PkgName", repos = NULL)'
+    - R -e 'tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="PkgName")), file = file.path(getwd(), "results.xml"))'
+  artifacts:
+    when: always
+    paths:
+      - results.xml
+    reports:
+      junit: results.xml
+
+```
+
+Download this file [here](./.gitlab-ci.yml).
+
+### Jenkins
+
+Extract from a full Jenkinsfile (replace `PkgName` with the name of your package):
+
+```
+stages {
+   stage('PkgName') {
+      stages {
+         stage('Roxygen') {
+            steps {
+               sh 'R -q -e \'roxygen2::roxygenize("PkgName")\''
+                            }
+                        }
+         stage('Build') {
+            steps {
+               sh 'R CMD build PkgName'
+                            }
+                        }
+         stage('Check') {
+            steps {
+               script() {
+                  switch(sh(script: 'ls PkgName_*.tar.gz && R CMD check PkgName_*.tar.gz --no-manual', returnStatus: true)) {
+                     case 0: currentBuild.result = 'SUCCESS'
+                     default: currentBuild.result = 'FAILURE'; error('script exited with failure status')
+                             }
+                          }
+                       }
+                    }
+         stage('Install') {
+            steps {
+               sh 'R -q -e \'install.packages(list.files("PkgName", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))\''
+              }
+         }
+         stage('Test and coverage') {
+            steps {
+               dir('PkgName') {
+                  sh '''R -q -e \'code <- "tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"tinytest\\", package =\\"PkgName\\")), file = file.path(getwd(), \\"results.xml\\"))"
+         packageCoverage <- covr::package_coverage(type = "none", code = code)
+         cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
+         covr::to_cobertura(packageCoverage)\''''
+              }
+         }
+         post {
+            always {
+               dir('PkgName') {
+                  junit 'results.xml'
+                  cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+		         	}
+	         	}
+	      }
+      }
+```
+
+Download the full Jenkinsfile [here](./Jenkinsfile).
+>>>>>>> master
 
 ## Related
 
@@ -124,4 +246,4 @@ post {
 * JUnit reporter in `testthat`: https://testthat.r-lib.org/reference/JunitReporter.html
 * test reporter for Github Action: https://github.com/dorny/test-reporter
 
-**(c) Copyright Open Analytics NV, 2012-2023 - Apache License 2.0**
+**(c) Copyright Open Analytics NV, 2022-2023 - Apache License 2.0**
