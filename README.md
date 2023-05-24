@@ -1,37 +1,21 @@
 
-<<<<<<< HEAD
-# Tinytest2JUnit
-=======
+
 # tinytest2JUnit
 
-<!-- badges: start -->
-[![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml)
-<!-- badges: end -->
-
 ## Overview
->>>>>>> master
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml)
 <!-- badges: end -->
-
-## Overview
 
 A package to convert [tinytest](https://github.com/markvanderloo/tinytest) results to JUnit XML.
 This enables processing of test results by CI/CD systems such as GitLab Runner or Jenkins.
 Similar to the tinytest philosophy this packages comes with no-dependencies.
 
-<<<<<<< HEAD
-## Core idea:
-
-* Extract needed info from a tinytest S3 result object (output of `tinytest::run_test_dir()`)
-* Format the output to JUnit.xml specs as described in this reference: https://llg.cubic.org/docs/junit/
-=======
 ## Core idea
 
 * Extract needed info from a tinytest S3 result object (output of `tinytest::run_test_dir()`)
 * Convert the output to JUnit XML format as described in this reference: https://llg.cubic.org/docs/junit/
->>>>>>> master
 
 ## Install
 
@@ -43,25 +27,12 @@ install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.e
 
 ## Basic Usage
 
-<<<<<<< HEAD
-The `writeJUnit()` function excepts any object of class tinytests and converts it to a JUnit XML file that can be interpreted by CI/CD systems.
-=======
 The `writeJUnit()` function accepts any object of class tinytests and converts it to a JUnit XML file that can be interpreted by CI/CD systems.
->>>>>>> master
+
 
 ```r
 testresults <- tinytest::run_test_dir("pkgdir")
 writeJUnit(testresults, file = "output.xml", overwrite = TRUE)
-<<<<<<< HEAD
-
-```
-
-## Example .yml files for CI/CD integration
-
-### Github
-
-```r
-=======
 ```
 
 ## Example files for CI/CD integration
@@ -71,7 +42,7 @@ writeJUnit(testresults, file = "output.xml", overwrite = TRUE)
 `PkgName` needs to be replaced with the name of your package
 
 ```yaml
->>>>>>> master
+
 on:
   push:
   pull_request:
@@ -120,38 +91,6 @@ jobs:
           reporter: java-junit        # Format of test results
 ```
 
-<<<<<<< HEAD
-### Jenkins
-
-Extract:
-
-```r
-
-stage('Install') {
-   steps {
-      sh 'R -q -e \'install.packages(list.files(".", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))\''
-     }
-}
-stage('Test and coverage') {
-   steps {
-      dir('PkgName') {
-         sh '''R -q -e \'code <- "tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"tinytest\\", package =\\"PkgName\\")), file = file.path(getwd(), \\"results.xml\\"))"
-         packageCoverage <- covr::package_coverage(type = "none", code = code)
-         cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
-         covr::to_cobertura(packageCoverage)\''''
-     }
-}
-post {
-   always {
-      dir('PkgName') {
-         junit 'results.xml'
-         cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
-			}
-		}
-	}
-}
-```
-=======
 Download this file [here](./.github/workflows/test-report.yml).
 
 ### Gitlab CI/CD
@@ -238,7 +177,6 @@ stages {
 ```
 
 Download the full Jenkinsfile [here](./Jenkinsfile).
->>>>>>> master
 
 ## Related
 
