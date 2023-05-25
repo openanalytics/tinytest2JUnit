@@ -2,16 +2,16 @@
 % Please edit documentation in R/constructJUnitTag.R
 \name{constructTestcaseTag}
 \alias{constructTestcaseTag}
-\title{Construct JUnit testcase tag}
+\title{Construct JUnit \verb{</testcase>} tag}
 \usage{
 constructTestcaseTag(tinytest)
 }
 \arguments{
-\item{tinytest}{a \code{\link[tinytest:tinytest]{tinytest::tinytest()}}-object representing an individual test case.}
+\item{`tinytest`}{a \code{tinytests}-object representing an individual test case.}
 }
 \value{
-\code{XMLtag}: with tag-name = "tinytest" and contains all the tests results of the file.
+\code{XMLtag}: with tag-name = \code{tinytest} and contains the test result per test.
 }
 \description{
-Construct JUnit testcase tag based on a single tinytest results.
+Construct JUnit \verb{</testcase>} tag based on a single \code{tinytest} result.
 }
