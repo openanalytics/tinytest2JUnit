@@ -22,6 +22,12 @@
 #' In case of overwrite = FALSE and the file already exists an error is thrown.
 #' 
 #' @export
+#' @examples 
+#' # Run tests with `tinytest`
+#' testresults <- tinytest::run_test_dir("example_tests/multiple_files"", verbose = F)
+#' # temporary output file to save JUnit XML to
+#' tmpFile <- tempfile(fileext = ".xml")
+#' writeJUnit(tinytests = testresults, file = tmpFile)
 writeJUnit <- function(tinytests, file, overwrite = TRUE) {
   
   fileExists <- file.exists(file)
