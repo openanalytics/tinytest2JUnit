@@ -67,7 +67,7 @@ constructTestsuiteTag <- function(testResultsSingleFile) {
 #' 
 #' Construct JUnit `</testcase>` tag based on a single `tinytest` result.
 #' 
-#' @param `tinytest` a `tinytests`-object representing an individual test case. 
+#' @param tinytest a `tinytest`-object representing an individual test case. 
 #' @return `XMLtag`: with tag-name = `tinytest` and contains the test result per test.
 constructTestcaseTag <- function(tinytest) {
   

@@ -7,7 +7,7 @@
 writeJUnit(tinytests, file, overwrite = TRUE)
 }
 \arguments{
-\item{tinytests}{\code{tinytests} object to convert to JUnit xml.}
+\item{tinytests}{\code{tinytests}-object to convert to JUnit xml.}
 
 \item{file}{\code{character(1)}: Full file path to the .xml file to write the JUnit xml to.
 Example: "/home/user/documents/results.xml".}
@@ -19,7 +19,7 @@ By default TRUE.}
 \code{invisible: TRUE}.
 }
 \description{
-Write the \code{\link[tinytest:tinytests]{tinytest::tinytests()}}-object to a JUnit XML reporting file.
+Write the \code{tinytests}-object to a JUnit XML reporting file.
 }
 \section{Side-effects}{
 
@@ -35,5 +35,5 @@ In case of overwrite = FALSE and the file already exists an error is thrown.
 }
 
 \seealso{
-The JUnit XML report format: https://llg.cubic.org/docs/junit/
+The JUnit XML report format:  \url{https://llg.cubic.org/docs/junit/}
 }
