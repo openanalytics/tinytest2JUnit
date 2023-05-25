@@ -34,6 +34,14 @@ They are however not considered as failures and would thus not stop a pipeline.
 In case of overwrite = FALSE and the file already exists an error is thrown.
 }
 
+\examples{
+# Run tests with `tinytest`
+dirWithTests <- system.file("example_tests/multiple_files",package = "tinytest2JUnit")
+testresults <- tinytest::run_test_dir(dirWithTests, verbose = FALSE)
+# temporary output file to save JUnit XML to
+tmpFile <- tempfile(fileext = ".xml")
+writeJUnit(tinytests = testresults, file = tmpFile)
+}
 \seealso{
 The JUnit XML report format:  \url{https://llg.cubic.org/docs/junit/}
 }
