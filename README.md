@@ -75,7 +75,7 @@ jobs:
           install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))
         shell: Rscript {0} 
       - run: |
-          tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="PkgName")),
+          library(PkgName);tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="PkgName")),
            file = file.path(getwd(), "results.xml"))
         shell: Rscript {0}   
 
@@ -108,7 +108,7 @@ test:
     - R CMD build PkgName
     - R CMD check PkgName_*.tar.gz --no-manual --no-build-vignettes
     - R -e 'install.packages("PkgName", repos = NULL)'
-    - R -e 'tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="PkgName")), file = file.path(getwd(), "results.xml"))'
+    - R -e 'library(PkgName);tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="PkgName")), file = file.path(getwd(), "results.xml"))'
   artifacts:
     when: always
     paths:
@@ -156,7 +156,7 @@ stages {
          stage('Test and coverage') {
             steps {
                dir('PkgName') {
-                  sh '''R -q -e \'code <- "tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"tinytest\\", package =\\"PkgName\\")), file = file.path(getwd(), \\"results.xml\\"))"
+                  sh '''R -q -e \'code <- "library(PkgName);tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"tinytest\\", package =\\"PkgName\\")), file = file.path(getwd(), \\"results.xml\\"))"
          packageCoverage <- covr::package_coverage(type = "none", code = code)
          cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
          covr::to_cobertura(packageCoverage)\''''
