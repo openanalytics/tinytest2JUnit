@@ -24,7 +24,8 @@
 #' @export
 #' @examples 
 #' # Run tests with `tinytest`
-#' testresults <- tinytest::run_test_dir("example_tests/multiple_files"", verbose = F)
+#' dir_with_tests <- system.file("example_tests/multiple_files",package = "tinytest2JUnit")
+#' testresults <- tinytest::run_test_dir(dir_with_tests, verbose = FALSE)
 #' # temporary output file to save JUnit XML to
 #' tmpFile <- tempfile(fileext = ".xml")
 #' writeJUnit(tinytests = testresults, file = tmpFile)
