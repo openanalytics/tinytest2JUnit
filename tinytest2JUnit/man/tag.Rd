@@ -9,16 +9,16 @@ tag(name, attributes = list(), content = list())
 \arguments{
 \item{name}{\code{character(1)} specifying the name of the tag.}
 
-\item{attributes}{\code{named-list} being the xml attributes.
+\item{attributes}{\code{named-list} being the XML attributes.
 Names = attribute names, Values = attribute value.}
 
-\item{content}{\code{unnamed-list} being the content xml-tag. Each element is placed
+\item{content}{\code{unnamed-list} being the content XML-tag. Each element is placed
 next to each other in the tag.}
 }
 \value{
 a \code{XMLtag}-object.
 }
 \description{
-Create a list object that roughly mimics the behaviour of a simplistic xml tag element.
-Supported are xml tag-name, tag-attributes and tag-content.
+Create a list object that roughly mimics the behaviour of a simplistic XML tag element.
+Supported are XML tag-name, tag-attributes and tag-content.
 }

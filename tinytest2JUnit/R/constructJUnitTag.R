@@ -1,16 +1,16 @@
 
 
-#' Construct the JUnit testsuites tag
+#' Construct the JUnit `</testsuites>` tag
 #' 
-#' Convert the tinytests object containing test across possibly multiple files into a JUnit 
-#' testsuites tag.
+#' Convert the `tinytests`-object containing test across possibly multiple files into a JUnit 
+#' `</testsuites>` tag.
 #' 
 #' @details
 #' Reference for JUnit XML format: https://llg.cubic.org/docs/junit/
 #' 
-#' @param testResults [tinytest::tinytests]-object to convert into a JUnit xml object.
-#'   Usually the result of calling [tinytest::test_package()].
-#' @return `XMLtag`: with tag-name = "testsuites". This is the root of the JUnit xml document.
+#' @param testResults `tinytests`-object to convert into a JUnit XML object.
+#'   Usually the result of calling [tinytest::test_package()] or [tinytest::run_test_dir()].
+#' @return `XMLtag`: with tag-name = `</testsuites>`. This is the root of the JUnit XML document.
 constructTestsuitesTag <- function(testResults) {
  
   stopifnot(inherits(testResults, "tinytests"))
@@ -36,12 +36,12 @@ constructTestsuitesTag <- function(testResults) {
   )
 }
 
-#' Construct JUnit testsuite tag 
+#' Construct JUnit `</testsuite>` tag 
 #' 
-#' Construct the "testsuite" of the a tinytest, given all the tinytests results from a single test file. 
+#' Construct the `</testsuite>` tag of a `tinytest`, given all the `tinytest` results from a single test file. 
 #' 
-#' @param testResultsSingleFile `tinytests` with all test results of a specified test file.
-#' @return `XMLtag`: with tag-name = "testsuite" and contains all the tests results of the file.
+#' @param testResultsSingleFile `tinytesta`-object with all test results of a specified test file.
+#' @return `XMLtag`: with tag-name = `</testsuite>` that contains all the test results per test file.
 constructTestsuiteTag <- function(testResultsSingleFile) {
   
   stopifnot(inherits(testResultsSingleFile, "tinytests"))
@@ -63,12 +63,12 @@ constructTestsuiteTag <- function(testResultsSingleFile) {
 }
 
 
-#' Construct JUnit testcase tag 
+#' Construct JUnit `</testcase>` tag 
 #' 
-#' Construct JUnit testcase tag based on a single tinytest results.
+#' Construct JUnit `</testcase>` tag based on a single `tinytest` result.
 #' 
-#' @param tinytest a [tinytest::tinytest()]-object representing an individual test case. 
-#' @return `XMLtag`: with tag-name = "tinytest" and contains all the tests results of the file.
+#' @param tinytest a `tinytest`-object representing an individual test case. 
+#' @return `XMLtag`: with tag-name = `tinytest` and contains the test result per test.
 constructTestcaseTag <- function(tinytest) {
   
   stopifnot(inherits(tinytest, "tinytest"))
