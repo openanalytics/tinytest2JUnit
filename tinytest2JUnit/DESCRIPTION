@@ -1,14 +1,18 @@
 Package: tinytest2JUnit
 Type: Package
-Title: Convert Tinytest Output to JUnit XML
-Version: 0.1.3
+Title: Convert 'tinytest' Output to JUnit XML
+Version: 1.0.1
 Maintainer: Anne-Katrin Hess <anne-katrin.hess@openanalytics.eu>
 Authors@R: c(
 	person(given = "Anne-Katrin", family = "Hess", email = "anne-katrin.hess@openanalytics.eu", role = c("aut", "cre")),
 	person(given ="Lennart", family = "Tuijnder", email = "lennart.tuijnder@openanalytics.eu", role = c("aut")))
-Description: Convert tinytest results output to JUnit XML for usage by CI/CD systems. 
+Description: Unit testing is a solid component of automated CI/CD pipelines. 'tinytest' - a light-weight,
+	zero-dependency  alternative to 'testthat' was developed. To be able to integrate 'tinytests' results into common CI/CD
+	systems the 'tinytests'-object needs to be converted to JUnit XML format. 'tinytest2JUnit' enables this conversion
+	while keeping the zero-dependency nature.
 Suggests: 
 	tinytest
+URL: https://github.com/openanalytics/tinytest2JUnit
 License: GPL-3
 Copyright: Open Analytics NV, 2023
 RoxygenNote: 7.2.3
