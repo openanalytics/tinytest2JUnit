@@ -13,6 +13,7 @@ Description: Unit testing is a solid component of automated CI/CD pipelines. 'ti
 Suggests: 
 	tinytest
 URL: https://github.com/openanalytics/tinytest2JUnit
+BugReports: https://github.com/openanalytics/tinytest2JUnit/issues
 License: GPL-3
 Copyright: Open Analytics NV, 2023
 RoxygenNote: 7.2.3
