@@ -3,7 +3,7 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml/badge.svg)](https://github.com/openanalytics/tinytest2JUnit/actions/workflows/check-standard.yml)
-[![codecov](https://codecov.io/gh/openanalytics/tinytest2JUnit/branch/main/graph/badge.svg)](https://app.codecov.io/gh/openanalytics/tinytest2JUnit)
+[![codecov](https://codecov.io/gh/openanalytics/tinytest2JUnit/branch/master/graph/badge.svg)](https://app.codecov.io/gh/openanalytics/tinytest2JUnit)
 <!-- badges: end -->
 
 ## Overview
