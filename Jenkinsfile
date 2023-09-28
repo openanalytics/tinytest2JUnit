@@ -85,12 +85,7 @@ pipeline {
                           command: 
                             - cat
                           tty: true
-                          imagePullPolicy: Always
-                        - name: rdepot-cli
-                          command:
-                          - cat
-                          tty: yes
-                          image: openanalytics/rdepot-cli:latest"""
+                          imagePullPolicy: Always"""
                     defaultContainer 'r'
                 }
             }
