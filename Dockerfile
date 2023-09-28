@@ -54,6 +54,7 @@ RUN R -q -e "install.packages('knitr')" && \
     R -q -e "install.packages('purrr')" && \
     R -q -e "install.packages('stringr')" && \
     R -q -e "install.packages('covr')" && \
-    R -q -e "install.packages('roxygen2')"
+    R -q -e "install.packages('roxygen2')" && \
+    R -q -e "install.packages('DT')" 
 
 
