@@ -2,6 +2,7 @@ pipeline {
     agent any
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
+        authorizationMatrix inheritanceStrategy: inheritingGlobal(), permissions: ['hudson.model.Item.Build:ahess', 'hudson.model.Item.Read:ahess', 'hudson.model.Item.Cancel:ahess', 'hudson.model.Item.Workspace:ahess']
     }
     environment {
         IMAGE = 'tinytest2junit'
@@ -143,7 +144,7 @@ pipeline {
                 }
                 stage('Archive artifacts') {
                     steps {
-                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, test-results.txt', fingerprint: true
+                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, test-results.txt, testCoverage.zip', fingerprint: true
                     }
                 }
                 stage('RDepot') {
