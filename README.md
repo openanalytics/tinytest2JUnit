@@ -19,10 +19,10 @@ Similar to the tinytest philosophy this packages comes with no-dependencies.
 
 ## Install
 
-From the OA public repository:
+From CRAN:
 
 ```r
-install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))
+install.packages("tinytest2JUnit")
 ```
 
 ## Basic Usage
