@@ -94,7 +94,8 @@ constructTestcaseTag <- function(tinytest) {
   } else {
     diff <- character(0L)
   }
-  description <- paste0(c(call, diff), collapse = "\n")
+  
+  description <- escapeXmlText(paste0(c(call, diff), collapse = "\n"))
   
   if (isFALSE(tinytest)) {
     attributes$status <- "FAILED"

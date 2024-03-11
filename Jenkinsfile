@@ -2,7 +2,7 @@ pipeline {
     agent any
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
-        authorizationMatrix inheritanceStrategy: inheritingGlobal(), permissions: ['hudson.model.Item.Build:ahess', 'hudson.model.Item.Read:ahess', 'hudson.model.Item.Cancel:ahess', 'hudson.model.Item.Workspace:ahess']
+        authorizationMatrix inheritanceStrategy: inheritingGlobal(), permissions: ['hudson.model.Item.Build:consultants', 'hudson.model.Item.Read:consultants', 'hudson.model.Item.Cancel:consultants', 'hudson.model.Item.Workspace:consultants']
     }
     environment {
         IMAGE = 'tinytest2junit'

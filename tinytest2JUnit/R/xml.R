@@ -13,7 +13,9 @@
 #' @return a `XMLtag`-object. 
 tag <- function(name, attributes = list(), content = list()) {
   stopifnot(is.list(attributes), is.list(content), is.null(names(content)))
-  if (length(attributes) > 0) stopifnot(!is.null(names(attributes)), all(nchar(names(attributes))>0))
+  if (length(attributes) > 0) {
+    stopifnot(!is.null(names(attributes)), all(nchar(names(attributes)) > 0))
+  }
   structure(list(name = name, attributes = attributes, content = content), class = "XMLtag")
 }
 
@@ -36,16 +38,30 @@ format.XMLtag <- function(x, level = 0, ...) {
   
   attributes_str <- vapply(
     X = names(x$attributes), 
-    FUN = function(attr_nm) paste0(attr_nm,"='",x$attributes[[attr_nm]],"'"),
+    FUN = function(attr_nm) paste0(attr_nm, "='", x$attributes[[attr_nm]], "'"),
     FUN.VALUE = character(1L)
   )
   attributes_str <- paste0(attributes_str, collapse = " ")
   paste0(
-    n_spaces_tag, "<", x$name, if (nchar(attributes_str)>0) paste0(" ", attributes_str),">\n",
+    n_spaces_tag, "<", x$name, if (nchar(attributes_str) > 0) paste0(" ", attributes_str), ">\n",
     if (nchar(contents_str) > 0) paste0(n_spaces_content, contents_str, "\n"),
     n_spaces_tag, "</", x$name, ">"
   )
 }
+
+#' Escape xml text 
+#' 
+#' Escape the characters '<' and `&` in a character vector meant to be xml-text. 
+#' 
+#' @param x a `character` vector meant to be xml-text.
+#' @return The same `character` vector x but xml text escaped.
+escapeXmlText <- function(x) {
+  stopifnot(is.character(x))
+  x <- gsub("&", "&amp", x)
+  x <- gsub("<", "&lt", x)
+  return(x)
+}
+
 
 
 #' Print method for XMLtag class.

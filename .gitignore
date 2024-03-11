@@ -13,3 +13,5 @@ development/
 presentation/
 Jenkinsfile
 Dockerfile
+
+.lintr
