@@ -48,3 +48,9 @@ expect_error(
   writeJUnit(tinytests = testresults, file = tmpFile, overwrite = FALSE),
   info = "Overwrite = FALSE does indeed not overwrite a file if it already exists."
 )
+
+expect_equal(
+  length(utils::capture.output(writeJUnit(testresults))),
+  nLinesWrittenFirstTime, 
+  info = "writeJUnit by defaults write to stdout"
+)

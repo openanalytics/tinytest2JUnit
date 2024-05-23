@@ -10,8 +10,8 @@
 #' They are however not considered as failures and would thus not stop a pipeline.
 #' 
 #' @param tinytests `tinytests`-object to convert to JUnit xml.
-#' @param file `character(1)`: Full file path to the .xml file to write the JUnit xml to. 
-#'  Example: "/home/user/documents/results.xml".
+#' @param file `character(1) | connection`: Full file path or connection object to write the 
+#'  JUnit xml content to. By default `stdout()` connection is used.
 #' @param overwrite `logical(1)`: should the file be overwritten if it already exist? 
 #'  By default TRUE.
 #' 
@@ -25,19 +25,26 @@
 #' @examples 
 #' # Run tests with `tinytest`
 #' dirWithTests <- system.file("example_tests/multiple_files",package = "tinytest2JUnit")
-#' testresults <- tinytest::run_test_dir(dirWithTests, verbose = FALSE)
-#' # temporary output file to save JUnit XML to
+#' testresults <- runTestDir(dirWithTests, verbose = FALSE)
+#' 
+#' writeJUnit(testresults) # Writes content to stdout
+#' 
 #' tmpFile <- tempfile(fileext = ".xml")
 #' writeJUnit(tinytests = testresults, file = tmpFile)
-writeJUnit <- function(tinytests, file, overwrite = TRUE) {
+writeJUnit <- function(tinytests, file = stdout(), overwrite = TRUE) {
   
-  fileExists <- file.exists(file)
-  if (fileExists && !overwrite) {
-    stop("Overwrite is set to FALSE and specified file already exists: ", file)
+  if (!isSingleLengthCharNonNA(file) && !inherits(file, "connection")) {
+    stop("File should be single length non-NA character or a connection object.")
+  }
+  if (is.character(file)) {
+    fileExists <- file.exists(file)
+    if (fileExists && !overwrite) {
+      stop("Overwrite is set to FALSE and specified file already exists: ", file)
+    }
   }
   
   junitXML <- constructTestsuitesTag(testResults = tinytests)
-  cat('<?xml version="1.0" encoding="UTF-8"?>\n', file = file, append = !overwrite)
+  cat('<?xml version="1.0" encoding="UTF-8"?>\n', file = file, append = FALSE)
   cat(format(junitXML), sep = "\n", file = file, append = TRUE)
   
   invisible(TRUE)
