@@ -2,4 +2,5 @@
 
 S3method(format,XMLtag)
 S3method(print,XMLtag)
+export(runTestDir)
 export(writeJUnit)

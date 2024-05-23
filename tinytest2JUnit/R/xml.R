@@ -63,6 +63,22 @@ escapeXmlText <- function(x) {
 }
 
 
+#' Escape xml
+#' 
+#' Escape the characters `&`,`"`,`'`,`<`,`>`
+#' 
+#' @seealso https://stackoverflow.com/a/1091953/10415129
+#' @param x a `character` vector meant to be xml-text.
+#' @return The same `character` vector x but xml text escaped.
+escapeXml <- function(x) {
+  stopifnot(is.character(x))
+  x <- gsub("&", "&amp", x)
+  x <- gsub("<", "&lt", x)
+  x <- gsub(">", "&gt", x)
+  x <- gsub("'", "&apos", x)
+  x <- gsub('"', "&quot", x)
+  return(x)
+}
 
 #' Print method for XMLtag class.
 #' 
