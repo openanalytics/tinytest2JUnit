@@ -30,22 +30,22 @@ tag <- function(name, attributes = list(), content = list()) {
 #' @return `character(1)` vector of the formatted XML tag. 
 #' @export
 format.XMLtag <- function(x, level = 0, ...) {
-  n_spaces_tag <- strrep(" ", 2 * level)
-  n_spaces_content <- strrep(" ", 2 * (level + 1))
+  nSpacesTag <- strrep(" ", 2 * level)
+  nSpacesContent <- strrep(" ", 2 * (level + 1))
   
-  contents_str <- vapply(x$content, format, FUN.VALUE = character(1L), level = level + 1)
-  contents_str <- paste0(contents_str, collapse = "\n")
+  contentsStr <- vapply(x$content, format, FUN.VALUE = character(1L), level = level + 1)
+  contentsStr <- paste0(contentsStr, collapse = "\n")
   
-  attributes_str <- vapply(
+  attributesStr <- vapply(
     X = names(x$attributes), 
-    FUN = function(attr_nm) paste0(attr_nm, "='", x$attributes[[attr_nm]], "'"),
+    FUN = function(attrName) paste0(attrName, "='", x$attributes[[attrName]], "'"),
     FUN.VALUE = character(1L)
   )
-  attributes_str <- paste0(attributes_str, collapse = " ")
+  attributesStr <- paste0(attributesStr, collapse = " ")
   paste0(
-    n_spaces_tag, "<", x$name, if (nchar(attributes_str) > 0) paste0(" ", attributes_str), ">\n",
-    if (nchar(contents_str) > 0) paste0(n_spaces_content, contents_str, "\n"),
-    n_spaces_tag, "</", x$name, ">"
+    nSpacesTag, "<", x$name, if (nchar(attributesStr) > 0) paste0(" ", attributesStr), ">\n",
+    if (nchar(contentsStr) > 0) paste0(nSpacesContent, contentsStr, "\n"),
+    nSpacesTag, "</", x$name, ">"
   )
 }
 

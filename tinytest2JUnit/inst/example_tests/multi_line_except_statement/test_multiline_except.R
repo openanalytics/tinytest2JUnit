@@ -4,12 +4,12 @@
 ###############################################################################
 
 
-returns_true <- function() TRUE
+returnsTrue <- function() TRUE
 
 expect_false( 
-  if(returns_true()){
-      TRUE
-    }else{
-      FALSE
-    }
+  if (returnsTrue()) {
+    TRUE
+  } else {
+    FALSE
+  }
 )
