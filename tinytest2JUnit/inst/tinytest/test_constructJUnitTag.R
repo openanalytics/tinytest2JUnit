@@ -16,7 +16,10 @@ expect_true(
   info = "Expected testsuites tag attributes are present"
 )
 expect_true(!is.na(tags$attributes$duration), info = "Total run time is reported.")
-expect_true(isSingleLengthCharNonNA(tags$attributes$name), info = "Testsuites name is set")
+expect_true(
+  tinytest2JUnit:::isSingleLengthCharNonNA(tags$attributes$name),
+  info = "Testsuites name is set"
+)
 
 
 testResults <- tinytest::run_test_dir(
