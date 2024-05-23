@@ -2,7 +2,6 @@ pipeline {
     agent any
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
-        authorizationMatrix inheritanceStrategy: inheritingGlobal(), permissions: ['hudson.model.Item.Build:consultants', 'hudson.model.Item.Read:consultants', 'hudson.model.Item.Cancel:consultants', 'hudson.model.Item.Workspace:consultants']
     }
     environment {
         IMAGE = 'tinytest2junit'
@@ -11,6 +10,7 @@ pipeline {
         TAG = sh(returnStdout: true, script: "echo $BRANCH_NAME | sed -e 's/[A-Z]/\\L&/g' -e 's/[^a-z0-9._-]/./g'").trim()
         REGION = 'eu-west-1'
         NOT_CRAN = 'true'
+        _R_CHECK_TESTS_NLINES_ = 0
     }
     stages {
         stage('Build Image') {
@@ -28,7 +28,7 @@ pipeline {
                             secretName: registry-robot
                       containers:
                       - name: kaniko
-                        image: gcr.io/kaniko-project/executor:v1.9.1-debug
+                        image: gcr.io/kaniko-project/executor:v1.21.1-debug
                         env:
                         - name: AWS_SDK_LOAD_CONFIG
                           value: "true"
@@ -42,7 +42,7 @@ pipeline {
                           limits:
                               memory: "4096Mi"
                               ephemeral-storage: "4Gi"
-                        imagePullPolicy: Always
+                        imagePullPolicy: IfNotPresent
                         volumeMounts:
                           - name: kaniko-dockerconfig
                             mountPath: /kaniko/.docker/config.json
@@ -80,7 +80,12 @@ pipeline {
                           command: 
                             - cat
                           tty: true
-                          imagePullPolicy: Always"""
+                          imagePullPolicy: Always
+                        - name: rdepot-cli
+                          command:
+                            - cat
+                          tty: yes
+                          image: ${env.REGISTRY}/openanalytics/rdepot-cli:latest"""
                     defaultContainer 'r'
                 }
             }
@@ -105,7 +110,7 @@ pipeline {
                         stage('Check') {
                             steps {
                                 script() {
-                                    switch(sh(script: 'ls tinytest2JUnit_*.tar.gz && R CMD check tinytest2JUnit_*.tar.gz --no-manual', returnStatus: true)) {
+                                    switch(sh(script: 'ls tinytest2JUnit_*.tar.gz && R CMD check tinytest2JUnit_*.tar.gz --no-tests --no-manual', returnStatus: true)) {
                                         case 0: currentBuild.result = 'SUCCESS'
                                         default: currentBuild.result = 'FAILURE'; error('script exited with failure status')
                                     }
@@ -120,12 +125,10 @@ pipeline {
                         stage('Test and coverage') {
                             steps {
                                 dir('tinytest2JUnit') {
-                                    sh '''R -q -e \'code <- "library(tinytest2JUnit);tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"tinytest\\", package = \\"tinytest2JUnit\\")), file = file.path(getwd(), \\"results.xml\\"))"
+                                    sh '''R -q -e \'code <- "library(tinytest2JUnit);tinytest2JUnit::writeJUnit(tinytest2JUnit::runTestDir(system.file(\\"tinytest\\", package = \\"tinytest2JUnit\\")), file = file.path(getwd(), \\"results.xml\\"))"
                                     packageCoverage <- covr::package_coverage(type = "none", code = code)
-                                    cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
-                                    covr::report(x = packageCoverage, file = paste0("testCoverage-", attr(packageCoverage, "package")$package, "-", attr(packageCoverage, "package")$version, ".html"));
+                                    cat(readLines(file.path(getwd(), "test-results.txt")), sep = "\n")
                                     covr::to_cobertura(packageCoverage)\''''
-                                    sh 'zip -r testCoverage.zip lib/ testCoverage*.html'
                                 }
                             }
                             post {
@@ -141,7 +144,29 @@ pipeline {
                 }
                 stage('Archive artifacts') {
                     steps {
-                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, test-results.txt, testCoverage.zip', fingerprint: true
+                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, test-results.txt', fingerprint: true
+                    }
+                }
+                stage('RDepot') {
+                    when {
+                        //packamon info: specify when you want your package to be submitted 
+                        //see https://www.jenkins.io/doc/book/pipeline/syntax/#built-in-conditions 
+                        anyOf {
+                            branch 'develop'
+                            branch 'master'
+                        }
+                    }
+                    environment {
+                        RDEPOT_TOKEN = credentials('jenkins-rdepot-token')
+                        RDEPOT_HOST = 'https://rdepot.openanalytics.eu'
+                    }
+                    steps {
+                        container('rdepot-cli') {
+                            sh '''rdepot packages submit \
+                            	-f *.tar.gz \
+                            	--replace false \
+                            	--repo internal'''
+                        }
                     }
                 }
             }
