@@ -42,7 +42,7 @@ constructTestsuitesTag <- function(testResults) {
   if (is.numeric(duration) && !is.na(duration)) attributes$duration <- as.character(duration)
   
   tag(
-    name = "testsuites",
+    "testsuites",
     attributes = attributes,
     content = lapply(
       X = unique(vctTestFiles),
@@ -73,16 +73,17 @@ constructTestsuiteTag <- function(testResultsSingleFile) {
     function(tinytest) isFALSE(tinytest) && inherits(tinytest, "uncaught-error"),
     FUN.VALUE = logical(1)
   )
-  
+  fileName <- tools::file_path_sans_ext(attr(testResultsSingleFile[[1]], "file")) 
   attributes <- list(
-    name = attr(testResultsSingleFile[[1]], "file"),  
+    name = escapeXml(fileName),  
+    hostname = escapeXml(unname(Sys.info()['nodename'])),
     tests = length(testResultsSingleFile), 
     failures = sum(isFailed, na.rm = TRUE),
     errors = sum(isError, na.rm = TRUE)
   )
   
   tag(
-    name = "testsuite",
+    "testsuite",
     attributes = attributes,
     content = lapply(testResultsSingleFile, constructTestcaseTag)
   )
@@ -116,17 +117,16 @@ constructTestcaseTag <- function(tinytest) {
 #'
 #' Helper function to construct the name of a testcase. Note, the charater is already xml escaped.
 #' 
-#' @param a `tinytest` object. (does not matter what result)
+#' @param tinytest a `tinytest` object. (does not matter what result)
 #' @return `character(1)` the testcase name to use for this tinytest object.
 nameTestcase <- function(tinytest) {
   
-  file <- attr(tinytest, "file")
   fst <- attr(tinytest, "fst")
   lst <- attr(tinytest, "lst")
   info <- attr(tinytest, "info")
 
-  # Name = {file}: L{fst}-L{lst} : {info}
-  name <- file
+  # Name = L{fst}-L{lst} : {info}
+  name <- ""
   if (!is.na(fst)) {
     name <- paste0(name, ": L", fst)
   }
@@ -137,8 +137,22 @@ nameTestcase <- function(tinytest) {
     infoSplit <- strsplit(info, "\n")
     name <- paste0(name, " : ", infoSplit[1])
   }
+  if (nchar(name) == 0) name <- "_unnamed"
   name <- escapeXml(name)
   return(name)
+}
+
+#' Helper function specifying the 'classname' attribute of the testcase tag.
+#' 
+#' Helper function specifying the 'classname' attribute of the testcase tag. 
+#' Currently equal to the fileName. The classname is already xml escaped.
+#' 
+#' @param tinytest a `tinytest`-object representing an individual test case. 
+#' @return `character(1)` being the 'classname'
+classnameTestcase <- function(tinytest) {
+  file <- attr(tinytest, "file")
+  fileName <- tools::file_path_sans_ext(file) 
+  escapeXml(fileName)
 }
 
 #' Construct a testcase-tag for a passed test.
@@ -217,6 +231,7 @@ failureTestcaseTag <- function(tinytest) {
     name = "testcase",
     attributes = list(
       name = nameTestcase(tinytest),
+      classname = classnameTestcase(tinytest),
       status = "FAILED"
     ),
     content = list(failureTag)
@@ -267,6 +282,7 @@ errorTestcaseTag <- function(tinytest) {
     name = "testcase",
     attributes = list(
       name = nameTestcase(tinytest),
+      classname = classnameTestcase(tinytest),
       status = "FAILED"
     ),
     content = list(errorTag)
@@ -281,16 +297,29 @@ errorTestcaseTag <- function(tinytest) {
 #' @return a `testase` `XMLtag`
 sideeffectTestcaseTag <- function(tinytest) {
   
-  # To do determine if sideeffect is a failure or not? For now have it as system-out.
+  name <- "SIDE-EFFECT detected: "
+
+  # Not sure if fst and/or lst will be defined for SIDE-EFFECT but in either case just 
+  # add it anyway.
+  fst <- attr(tinytest, "fst")
+  lst <- attr(tinytest, "lst")
+  if (!is.na(fst)) {
+    name <- paste0(name, ": L", fst)
+  }
+  if (!is.na(lst) && (fst != lst)) {
+    name <- paste0(name, "-L", lst)
+  }
   testcaseTag <- tag(
     name = "testcase",
     attributes = list(
-      name = nameTestcase(tinytest),
+      name = escapeXml(name),
+      classname = classnameTestcase(tinytest),
       status = "SIDE-EFFECT"
     ),
     content = list(
       tag(
         name = "system-out",
+        classname = classnameTestcase(tinytest),
         content = list(
           constructFailureDescription(tinytest)
         )

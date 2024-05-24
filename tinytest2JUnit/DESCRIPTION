@@ -11,6 +11,7 @@ Description: Unit testing is a solid component of automated CI/CD pipelines. 'ti
 	systems the 'tinytests'-object needs to be converted to JUnit XML format. 'tinytest2JUnit' enables this conversion
 	while keeping the zero-dependency nature.
 imports:
+	tools
 	parallel
 Suggests: 
 	tinytest
