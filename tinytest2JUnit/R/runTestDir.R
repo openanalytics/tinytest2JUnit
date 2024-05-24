@@ -218,13 +218,14 @@ runTestDir <- function(
   testfiles <- dir(dir, pattern = pattern, full.names = TRUE)
   testfiles <- localeSort(testfiles, lc_collate)
 
+  try(setCallWd <- getFromNamespace("set_call_wd", "tinytest")) # If internals change do not crash
   if (!inherits(cluster, "cluster")) {
     # set pwd here, to save time in run_test_file.
     oldwd <- getwd()
-    try(tinytest:::set_call_wd(oldwd)) # If internals of tinytest change do not crash.
+    try(setCallWd(oldwd)) 
     on.exit({
       setwd(oldwd)
-      try(tinytest:::set_call_wd(oldwd))
+      try(setCallWd(oldwd))
     })
     setwd(dir)  
     testOutput <- lapply(
