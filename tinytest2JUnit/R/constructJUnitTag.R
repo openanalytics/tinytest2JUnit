@@ -221,7 +221,7 @@ failureTestcaseTag <- function(tinytest) {
     name = "failure",
     attributes = list(
       message = if (!is.na(info)) escapeXml(firstLineInfo) else "",
-      type = if (!is.na(short)) short else ""
+      type = if (!is.na(short)) short else "failure"
     ),
     content = list(
       constructFailureDescription(tinytest)
