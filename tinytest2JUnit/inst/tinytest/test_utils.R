@@ -1,36 +1,63 @@
+isSingleLengthCharNonNA <- tinytest2JUnit:::isSingleLengthCharNonNA
+charVecToSingleLength <- tinytest2JUnit:::charVecToSingleLength
 
 expect_true(
-  tinytest2JUnit:::isSingleLengthCharNonNA("!"),
+  isSingleLengthCharNonNA("!"),
   info = "isSingleLengthIntNonNA works with valid characters"
 )
 expect_true(
-  tinytest2JUnit:::isSingleLengthCharNonNA(""),
+  isSingleLengthCharNonNA(""),
   info = "isSingleLengthIntNonNA works ''"
 )
 
 expect_false(
-  tinytest2JUnit:::isSingleLengthCharNonNA(NA),
+  isSingleLengthCharNonNA(NA),
   info = "isSingleLengthIntNonNA correctly falsifies with NA"
 )
 expect_false(
-  tinytest2JUnit:::isSingleLengthCharNonNA(NA_character_),
+  isSingleLengthCharNonNA(NA_character_),
   info = "isSingleLengthIntNonNA correctly falsifies with NA"
 )
 expect_false(
-  tinytest2JUnit:::isSingleLengthCharNonNA(NaN),
+  isSingleLengthCharNonNA(NaN),
   info = "isSingleLengthIntNonNA correctly falsifies with NA"
 )
 
 
 expect_false(
-  tinytest2JUnit:::isSingleLengthCharNonNA(c("A", "B")),
+  isSingleLengthCharNonNA(c("A", "B")),
   info = "isSingleLengthIntNonNA is false for length != 1"
 )
 expect_false(
-  tinytest2JUnit:::isSingleLengthCharNonNA(c(NA_character_, NA_character_)),
+  isSingleLengthCharNonNA(c(NA_character_, NA_character_)),
   info = "isSingleLengthIntNonNA is false for length != 1"
 )
 expect_false(
-  tinytest2JUnit:::isSingleLengthCharNonNA(character(0L)),
+  isSingleLengthCharNonNA(character(0L)),
   info = "isSingleLengthIntNonNA is false for length != 1"
+)
+
+
+expect_equal(
+  charVecToSingleLength("Hello\nWorld"),
+  "Hello\nWorld",
+  info = "Leaves normal length-1 alone"
+)
+
+expect_equal(
+  charVecToSingleLength(c("Hello", "World")),
+  "HelloWorld",
+  info = "charVecToSingleLength concates them with empty space"
+)
+
+expect_equal(
+  charVecToSingleLength(c("Hello", NA_character_, "World")),
+  "HelloNAWorld",
+  info = "NA is converted is converted to a literal NA"
+)
+
+expect_equal(
+  charVecToSingleLength(character(0L)),
+  "",
+  info = "Zero-length is converted to empty string."
 )
