@@ -15,7 +15,7 @@ isSingleLengthCharNonNA <- function(x) {
 #' @examples
 #' tinytest2JUnit:::charVecToSingleLength(c("Hello", "World")) # -> "HelloWorld"
 #' tinytest2JUnit:::charVecToSingleLength(c("Hello", NA_character_)) # -> "HelloNA"
-#' tinytest2JUnit:::charVecToSingleLength(character(0L))) # -> ""
+#' tinytest2JUnit:::charVecToSingleLength(character(0L)) # -> ""
 charVecToSingleLength <- function(x) {
   if (length(x) == 0) return("")
   x[is.na(x)] <- "NA"
