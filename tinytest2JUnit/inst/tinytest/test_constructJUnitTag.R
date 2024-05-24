@@ -49,7 +49,7 @@ tags <- tinytest2JUnit:::constructTestsuitesTag(testResults)
 expect_true(tags$attributes$tests == 3L)
 expect_true(tags$attributes$failures == 1L)
 expect_equal(
-  vapply(tags$content, \(testsuite) testsuite$attributes$name, FUN.VALUE = character(1)),
+  vapply(tags$content, function(testsuite) testsuite$attributes$name, FUN.VALUE = character(1)),
   target = c("test_file1.R", "test_file2.R"),
   info = "Name of testsuite-tag is equal to the test_file."
 )

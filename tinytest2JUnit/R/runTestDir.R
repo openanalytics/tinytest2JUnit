@@ -69,7 +69,7 @@ formattedFrame <- function(framecall, frameN, hasSrcInfo, dirName, fileName, lin
 #'   is returned!
 getFormattedStacktrace <- function() {
   trace <- .traceback(4)
-  hasSrcInfo <- vapply(trace, \(frame) !is.null(attr(frame, "srcref")), logical(1))
+  hasSrcInfo <- vapply(trace, function(frame) !is.null(attr(frame, "srcref")), logical(1))
   fileNames <- lapply(trace, getSrcFilename)
   lineNr <- lapply(trace, getSrcLocation)
   dirNames <- lapply(trace, getSrcDirectory)

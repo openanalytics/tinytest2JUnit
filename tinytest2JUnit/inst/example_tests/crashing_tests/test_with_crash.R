@@ -2,8 +2,8 @@ library(tinytest)
 
 expect_true(TRUE, info = "passing tests")
 
-a <- \() stop("bla")
-b <- \() a()
-d <- \() b()
+a <- function() stop("bla")
+b <- function() a()
+d <- function() b()
 
 d()
