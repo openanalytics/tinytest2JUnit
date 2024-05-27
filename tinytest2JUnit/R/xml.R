@@ -86,8 +86,8 @@ format.XMLtag <- function(x, level = 0, ...) {
 #' @return The same `character` vector x but xml text escaped.
 escapeXmlText <- function(x) {
   stopifnot(is.character(x))
-  x <- gsub("&", "&amp", x)
-  x <- gsub("<", "&lt", x)
+  x <- gsub("&", "&amp;", x)
+  x <- gsub("<", "&lt;", x)
   return(x)
 }
 
@@ -101,11 +101,11 @@ escapeXmlText <- function(x) {
 #' @return The same `character` vector x but xml escaped.
 escapeXml <- function(x) {
   stopifnot(is.character(x))
-  x <- gsub("&", "&amp", x)
-  x <- gsub("<", "&lt", x)
-  x <- gsub(">", "&gt", x)
-  x <- gsub("'", "&apos", x)
-  x <- gsub('"', "&quot", x)
+  x <- gsub("&", "&amp;", x)
+  x <- gsub("<", "&lt;", x)
+  x <- gsub(">", "&gt;", x)
+  x <- gsub("'", "&apos;", x)
+  x <- gsub('"', "&quot;", x)
   return(x)
 }
 

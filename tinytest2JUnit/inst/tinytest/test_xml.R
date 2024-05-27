@@ -60,8 +60,8 @@ expect_equal(
 )
 
 escaped <- tinytest2JUnit:::escapeXmlText(c("Hello <- world & !", "Leave > me ' \" alone"))
-expect_equal(escaped, c("Hello &lt- world &amp !", "Leave > me ' \" alone"))
+expect_equal(escaped, c("Hello &lt;- world &amp; !", "Leave > me ' \" alone"))
 
 
 escaped <- tinytest2JUnit:::escapeXml(c("<a b='t' c=\"d\">&</a>", "&"))
-expect_equal(escaped, c("&lta b=&apost&apos c=&quotd&quot&gt&amp&lt/a&gt", "&amp"))
+expect_equal(escaped, c("&lt;a b=&apos;t&apos; c=&quot;d&quot;&gt;&amp;&lt;/a&gt;", "&amp;"))
