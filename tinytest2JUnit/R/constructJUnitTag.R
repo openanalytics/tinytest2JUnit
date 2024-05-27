@@ -146,17 +146,18 @@ constructTestcaseTag <- function(tinytest) {
 #' @return `character(1)` the testcase name to use for this tinytest object.
 nameTestcase <- function(tinytest) {
   
+  file <- attr(tinytest, "file")
   fst <- attr(tinytest, "fst")
   lst <- attr(tinytest, "lst")
   info <- attr(tinytest, "info")
 
-  # Name = Line:{fst}->Line:{lst} : {info}
-  name <- ""
+  # Name = {file}L{fst}-L{lst} : {info}
+  name <- file
   if (!is.na(fst)) {
-    name <- paste0(name, "Line:", fst)
+    name <- paste0(name, " L", fst)
   }
   if (!is.na(lst) && (fst != lst)) {
-    name <- paste0(name, "->Line:", lst)
+    name <- paste0(name, "-L", lst)
   }
   if (!is.na(info)) {
     infoSplit <- strsplit(info[1], "\n")[[1]]

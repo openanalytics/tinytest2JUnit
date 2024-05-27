@@ -59,17 +59,17 @@ expect_equal(
 )
 expect_equal(
   tags$content[[1]]$content[[1]]$attributes, 
-  list(classname = "test_file1", name = "Line:9", status = "PASSED"),
+  list(classname = "test_file1", name = "test_file1.R: L9", status = "PASSED"),
   info = "testcase name and status are correctly set"
 )
 expect_equal(
   tags$content[[1]]$content[[2]]$attributes, 
-  list(classname = "test_file1", name = "Line:10 : Some info", status = "PASSED"),
+  list(classname = "test_file1", name = "test_file1.R L10 : Some info", status = "PASSED"),
   info = "Info get's added to the the testcase name."
 )
 expect_equal(
   tags$content[[2]]$content[[1]]$attributes, 
-  list(classname = "test_file2", name = "Line:9-&gt;Line:15", status = "FAILED"),
+  list(classname = "test_file2", name = "test_file2: L9-L15", status = "FAILED"),
   info = "Failed testcase are handled!"
 )
 
