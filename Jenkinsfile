@@ -126,10 +126,18 @@ pipeline {
                         stage('Test and coverage') {
                             steps {
                                 dir('tinytest2JUnit') {
-                                    sh '''R -q -e \'code <- "library(tinytest2JUnit);tinytest2JUnit::writeJUnit(tinytest2JUnit::runTestDir(system.file(\\"tinytest\\", package = \\"tinytest2JUnit\\")), file = file.path(getwd(), \\"results.xml\\"))"
+                                    sh '''R -q -e \'
+                                    code <- c(
+                                       "library(tinytest2JUnit)"
+                                       "testResults <- tinytest2JUnit::runTestDir(system.file(\\"tinytest\\", package = \\"tinytest2JUnit\\"))",
+                                       "tinytest2JUnit::writeJUnit(testResults, file = file.path(getwd(), \\"results.xml\\"))",
+                                       "if (!tinytest::all_pass(testResults)) stop(\"Test Failure\")",
+                                    )
+                                    # Execute above code (eg. perform the test) and track coverage. 
+                                    # Note! no coverage will be availalbe if any test failed!
                                     packageCoverage <- covr::package_coverage(type = "none", code = code)
-                                    cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
-                                    covr::to_cobertura(packageCoverage)\''''
+                                    covr::to_cobertura(packageCoverage)
+                                    \''''
                                 }
                             }
                             post {

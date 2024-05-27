@@ -15,7 +15,8 @@
 #' @param overwrite `logical(1)`: should the file be overwritten if it already exist? 
 #'  By default TRUE.
 #' 
-#' @return `invisible: TRUE`.
+#' @return `invisible(logical(1))` the results of [tinytest::all_pass()] on the tinytests object.
+#' 
 #' @seealso The JUnit XML report format:  \url{https://llg.cubic.org/docs/junit/}
 #' 
 #' @section Errors:
