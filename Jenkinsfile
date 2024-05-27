@@ -128,7 +128,7 @@ pipeline {
                                 dir('tinytest2JUnit') {
                                     sh '''R -q -e \'code <- "library(tinytest2JUnit);tinytest2JUnit::writeJUnit(tinytest2JUnit::runTestDir(system.file(\\"tinytest\\", package = \\"tinytest2JUnit\\")), file = file.path(getwd(), \\"results.xml\\"))"
                                     packageCoverage <- covr::package_coverage(type = "none", code = code)
-                                    cat(readLines(file.path(getwd(), "test-results.txt")), sep = "\n")
+                                    cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
                                     covr::to_cobertura(packageCoverage)\''''
                                 }
                             }
@@ -145,7 +145,7 @@ pipeline {
                 }
                 stage('Archive artifacts') {
                     steps {
-                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, test-results.txt', fingerprint: true
+                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, */results.xml', fingerprint: true
                     }
                 }
                 stage('RDepot') {
