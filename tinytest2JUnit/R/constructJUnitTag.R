@@ -2,14 +2,19 @@
 
 #' Construct the JUnit `</testsuites>` tag
 #' 
-#' Convert the `tinytests`-object containing test across possibly multiple files into a JUnit 
-#' `</testsuites>` tag.
+#' Convert the `tinytests2Junit` or `tinytests`-object containing test across 
+#' possibly multiple files into a JUnit `</testsuites>` tag. More details are reported to the 
+#' JUnit if a `tinytests2JUnit` object compared to the native `tinytests` object.
 #' 
 #' @details
 #' Reference for JUnit XML format: https://llg.cubic.org/docs/junit/
+#'
+#' See [tinytests2Junit()] which additional info is recorded.
 #' 
-#' @param testResults `tinytests`-object to convert into a JUnit XML object.
-#'   Usually the result of calling [tinytest::test_package()] or [tinytest::run_test_dir()].
+#' @param testResults `tinytests2Junit | `tinytests` object to convert into a JUnit XML object 
+#'   Usually the result of [runTestDir()] for a `tinytests2JUnit` object or native `tinytests`
+#'   produced by [tinytest::test_package()] or [tinytest::run_test_dir()].
+#'
 #' @return `XMLtag`: with tag-name = `</testsuites>`. This is the root of the JUnit XML document.
 constructTestsuitesTag <- function(testResults) {
  
@@ -35,19 +40,23 @@ constructTestsuitesTag <- function(testResults) {
     name = "tinytest results", 
     tests = length(testResults), 
     failures = sum(isFailure, na.rm = TRUE),
-    errors = sum(isError, na.rm = TRUE)
+    errors = sum(isError, na.rm = TRUE),
+    disabled = length(attr(testResults, "disabled"))
   )
   
   duration <- attr(testResults, "duration")
-  if (is.numeric(duration) && !is.na(duration)) attributes$duration <- as.character(duration)
+  if (is.numeric(duration) && !is.na(duration)) attributes$time <- as.character(duration)
   
+  uFiles <- unique(vctTestFiles)
+  testsuiteTags <- Map(
+    f = constructTestsuiteTag,
+    testsFile = lapply(uFiles, function(f) testResults[vctTestFiles == f]),
+    id = seq_along(uFiles) - 1 # JUnit uses 0 based index.
+  )
   tag(
     "testsuites",
     attributes = attributes,
-    content = lapply(
-      X = unique(vctTestFiles),
-      FUN = function(file) constructTestsuiteTag(testResults[vctTestFiles == file])
-    )
+    content = testsuiteTags
   )
 }
 
@@ -55,39 +64,55 @@ constructTestsuitesTag <- function(testResults) {
 #' 
 #' Construct the `</testsuite>` tag of a `tinytest`, given all the `tinytest` results 
 #' from a single test file. 
+#'
+#' @details
+#' In case a `tinytest2JUnit` is provided following additional info can be reported:
 #' 
-#' @param testResultsSingleFile `tinytesta`-object with all test results of a specified test file.
+#' * testsuite duration.
+#' * timestamp when the testsuite was performed.
+#' * hostname where the testsuite was ran.
+#' 
+#' @param testsFile `tinytests2JUnit | tinytests` -object with all test 
+#'    results of a specified test file. At least a single test is expected.
+#' @param id `integer(1)` testsuite id.
+#' 
 #' @return `XMLtag`: with tag-name = `</testsuite>` 
 #'   that contains all the test results per test file.
-constructTestsuiteTag <- function(testResultsSingleFile) {
+constructTestsuiteTag <- function(testsFile, id) {
   
-  stopifnot(inherits(testResultsSingleFile, "tinytests"))
+  stopifnot(inherits(testsFile, "tinytests"))
   
   isFailed <- vapply(
-    testResultsSingleFile,
+    testsFile,
     function(tinytest) isFALSE(tinytest) && !inherits(tinytest, "uncaught-error"),
     FUN.VALUE = logical(1)
   )
   isError <- vapply(
-    testResultsSingleFile,
+    testsFile,
     function(tinytest) isFALSE(tinytest) && inherits(tinytest, "uncaught-error"),
     FUN.VALUE = logical(1)
   )
-  fileName <- tools::file_path_sans_ext(attr(testResultsSingleFile[[1]], "file")) 
+  fileName <- attr(testsFile[[1]], "file")
+  fileNameWithoutExt <- tools::file_path_sans_ext(fileName) 
   attributes <- list(
-    name = escapeXml(fileName),  
-    hostname = escapeXml(unname(Sys.info()['nodename'])),
-    tests = length(testResultsSingleFile), 
+    name = escapeXml(fileNameWithoutExt),
+    id = id,
+    tests = length(testsFile),
     failures = sum(isFailed, na.rm = TRUE),
     errors = sum(isError, na.rm = TRUE)
   )
+
+  if (inherits(testsFile, 'tinytests2JUnit')) {
+    attributes$hostname <- escapeXml(attr(testsFile, "fileHostnames")[fileName])
+    attributes$time <- as.character(attr(testsFile, "fileDurations")[fileName])
+    attributes$timestamp <- escapeXml(attr(testsFile, "fileTimestamps")[fileName])
+  }
   
   tag(
     "testsuite",
     attributes = attributes,
-    content = lapply(testResultsSingleFile, constructTestcaseTag)
+    content = lapply(testsFile, constructTestcaseTag)
   )
-  
 }
 
 
@@ -125,19 +150,19 @@ nameTestcase <- function(tinytest) {
   lst <- attr(tinytest, "lst")
   info <- attr(tinytest, "info")
 
-  # Name = L{fst}-L{lst} : {info}
+  # Name = Line:{fst}->Line:{lst} : {info}
   name <- ""
   if (!is.na(fst)) {
-    name <- paste0(name, ": L", fst)
+    name <- paste0(name, "Line:", fst)
   }
   if (!is.na(lst) && (fst != lst)) {
-    name <- paste0(name, "-L", lst)
+    name <- paste0(name, "->Line:", lst)
   }
   if (!is.na(info)) {
-    infoSplit <- strsplit(info, "\n")
+    infoSplit <- strsplit(info[1], "\n")[[1]]
     name <- paste0(name, " : ", infoSplit[1])
   }
-  if (nchar(name) == 0) name <- "_unnamed"
+  if (nchar(name) == 0) name <- "unnamed"
   name <- escapeXml(name)
   return(name)
 }
@@ -163,6 +188,7 @@ passedTestcaseTag <- function(tinytest) {
   testcaseTag <- tag(
     name = "testcase",
     attributes = list(
+      classname = classnameTestcase(tinytest),
       name = nameTestcase(tinytest),
       status = "PASSED"
     )
@@ -196,7 +222,7 @@ constructFailureDescription <- function(tinytest) {
   
   info <- attr(tinytest, "info")
   if (!is.na(info)) {
-    infoSplit <- strsplit(info, "\n")
+    infoSplit <- strsplit(info[1], "\n")[[1]]
     infoDesc <- paste0('info| ', infoSplit) 
   } else {
     infoDesc <- character(0L)
@@ -213,14 +239,11 @@ constructFailureDescription <- function(tinytest) {
 failureTestcaseTag <- function(tinytest) {
   
   short <- attr(tinytest, "short")
-  info <- attr(tinytest, "info")
-  if (!is.na(info)) {
-    firstLineInfo <- strsplit(info, "\n")[1]
-  }
+  diff <- attr(tinytest, "diff")
   failureTag <- tag(
     name = "failure",
     attributes = list(
-      message = if (!is.na(info)) escapeXml(firstLineInfo) else "",
+      message = if (!is.na(diff)) escapeXml(diff[1]) else "",
       type = if (!is.na(short)) short else "failure"
     ),
     content = list(
@@ -230,8 +253,8 @@ failureTestcaseTag <- function(tinytest) {
   testcaseTag <- tag(
     name = "testcase",
     attributes = list(
-      name = nameTestcase(tinytest),
       classname = classnameTestcase(tinytest),
+      name = nameTestcase(tinytest),
       status = "FAILED"
     ),
     content = list(failureTag)
@@ -281,8 +304,8 @@ errorTestcaseTag <- function(tinytest) {
   testcaseTag <- tag(
     name = "testcase",
     attributes = list(
-      name = nameTestcase(tinytest),
       classname = classnameTestcase(tinytest),
+      name = nameTestcase(tinytest),
       status = "FAILED"
     ),
     content = list(errorTag)
@@ -312,14 +335,13 @@ sideeffectTestcaseTag <- function(tinytest) {
   testcaseTag <- tag(
     name = "testcase",
     attributes = list(
-      name = escapeXml(name),
       classname = classnameTestcase(tinytest),
+      name = escapeXml(name),
       status = "SIDE-EFFECT"
     ),
     content = list(
       tag(
         name = "system-out",
-        classname = classnameTestcase(tinytest),
         content = list(
           constructFailureDescription(tinytest)
         )

@@ -10,7 +10,7 @@
 \item{x}{an \code{XMLtag}-object}
 
 \item{level}{print depth level. For each level 2 spaces are added to the left. The content of a
-tag is automatically indented with 1 level.}
+tag is automatically indented with 1 level. Except for text-content (see details).}
 
 \item{...}{to ignore}
 }
@@ -19,4 +19,8 @@ tag is automatically indented with 1 level.}
 }
 \description{
 Format S3 method for the \code{XMLtag}-class
+}
+\details{
+Note, text content does not get indented or put on a new line, since whites space characters
+are of relevance.
 }

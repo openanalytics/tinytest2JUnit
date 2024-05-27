@@ -16,6 +16,7 @@ expect_equal(
 )
 
 # Below assumes that this test_file executed from the tinytest/ directory!
+# Also that devtools::load_all() is performed if you are testing interactively!
 dirWhereItGotExecutedFrom <- system.file(
   "tinytest",
   package = "tinytest2JUnit"

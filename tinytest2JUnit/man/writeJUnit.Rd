@@ -4,13 +4,13 @@
 \alias{writeJUnit}
 \title{Write the results of a \code{tinytests}-object into JUnit xml report.}
 \usage{
-writeJUnit(tinytests, file, overwrite = TRUE)
+writeJUnit(tinytests, file = stdout(), overwrite = TRUE)
 }
 \arguments{
 \item{tinytests}{\code{tinytests}-object to convert to JUnit xml.}
 
-\item{file}{\code{character(1)}: Full file path to the .xml file to write the JUnit xml to.
-Example: "/home/user/documents/results.xml".}
+\item{file}{\code{character(1) | connection}: Full file path or connection object to write the
+JUnit xml content to. By default \code{stdout()} connection is used.}
 
 \item{overwrite}{\code{logical(1)}: should the file be overwritten if it already exist?
 By default TRUE.}
@@ -37,8 +37,10 @@ In case of overwrite = FALSE and the file already exists an error is thrown.
 \examples{
 # Run tests with `tinytest`
 dirWithTests <- system.file("example_tests/multiple_files",package = "tinytest2JUnit")
-testresults <- tinytest::run_test_dir(dirWithTests, verbose = FALSE)
-# temporary output file to save JUnit XML to
+testresults <- runTestDir(dirWithTests, verbose = FALSE)
+
+writeJUnit(testresults) # Writes content to stdout
+
 tmpFile <- tempfile(fileext = ".xml")
 writeJUnit(tinytests = testresults, file = tmpFile)
 }

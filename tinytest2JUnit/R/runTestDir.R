@@ -115,22 +115,71 @@ getFormattedStacktrace <- function() {
   )
 }
 
-#' Internal wrapper arround tinytest::run_test_file
-#' 
-#' Internal wrapper arround [tinytest::run_test_file()] that catches uncaught errors and logs 
-#' the stacktrace of where the error occured. 
+#' tinytestJUnit test results
+#'
+#' An object of class `tinytests2JUnit`. Note the plurar. A subclass of [tinytest::tinytests()] 
+#' containing extra info recordings that are used in the export to JUnit.
 #'
 #' @details 
+#' Following details are recorded when running the tests files and stored as additional attributes 
+#' to the object:
+#' 
+#' * **fileDurations**: `named-numeric(n)`. Names = filename of tests files, value = duration 
+#'   in seconds on how long the test file took to run.
+#' * **fileTimestamps**: `named-character(n)`. Names = filename of tests files, value = timestamp 
+#'   when the test was invoked.
+#' * **fileHostnames**: `named-character(n)`. Names = filename of tests files, value = The hostname 
+#'   of the system that ran the tests. (Usefull in combination with clusters). 
+#' * **disabled**: `character`. A character vector of filenames where no tests were ran. 
+#'    They are flagged as disabled tests.
+#' 
+#' @aliases tinytests2JUnit
+#' 
+#' @export 
+#' @rdname tinytests2JUnit 
+`[.tinytests2JUnit` <- function(x, i) {
+  r <- unclass(x)[i]
+  files <- unique(vapply(r, attr, "file", FUN.VALUE = character(1)))
+  structure(
+    r,
+    class = c("tinytests2JUnit", "tinytests"),
+    duration = NULL,
+    fileDurations = attr(x, 'fileDurations')[files],
+    fileTimestamps = attr(x, 'fileTimestamps')[files],
+    fileHostnames = attr(x, 'fileHostnames')[files],
+    disabled = attr(x, 'disabled')
+  )
+}
+
+#' Internal wrapper arround tinytest::run_test_file
+#' 
+#' Internal wrapper arround [tinytest::run_test_file()] that records the test duration and 
+#' catches uncaught errors and logs the stacktrace of where the error occured. 
+#'
+#' @details 
+#' The response is a subclass of the `tinytests` object called: `tinytests2Junit` 
+#' object which captures additional info for the reporting to JUnit:
+#' 
+#' * Duration to run the file.
+#' * Timestamp when the test was run.
+#' * hostname of the computer where it was ran on.
+#' 
 #' The caught error is turned into a subclass uncaught-error of tinytest. This is implementation 
 #' detail and only to be understood by constructJUnitTag.
+#'
+#' If an error occured it is captured and `uncaught-error` object (subclass of `tinytest`) is 
+#' returned in the `tinytests` object.
+#' This tinytest object represents a "failed" tests that will get reported as an Error in the 
+#' JUnit. Various aspects of the error are also captured like the the stacktrace.
 #' 
 #' @param file `character(1)` test file to run. 
 #' @param ... arguments passed on to [tinytest::run_test_file()] 
 #'
-#' @return a `tinytests` object
+#' @return a `tinytests2JUnit` object (being a subclass of `tinytest` object).
 runTestFile <- function(file, ...) { 
 
   formattedStacktrace <- NA_character_
+  timeStart <- Sys.time()
   testOutput <- tryCatch(
     # Catch safe the stacktrace where the uncaught error is signaled using 'withCallingHandlers'
     expr = withCallingHandlers(
@@ -161,6 +210,22 @@ runTestFile <- function(file, ...) {
       return(structure(list(errorTest), class = "tinytests"))
     }
   )
+  timeEnd <- Sys.time()
+
+  # Take by preference the file defintion internally used by tinytest
+  file <- if (length(testOutput) != 0) attr(testOutput[[1]], "file") else basename(file)
+  attr(testOutput, "fileDurations") <- setNames(
+    as.numeric(timeEnd) - as.numeric(timeStart),
+    nm = file
+  )
+  attr(testOutput, "fileTimestamps") <- setNames(
+    strftime(timeStart, "%Y-%m-%dT%H:%M:%S%z"),
+    nm = file
+  )
+  attr(testOutput, "fileHostnames") <- setNames(Sys.info()['nodename'], nm = file)
+  attr(testOutput, "disabled") <- if (length(testOutput) == 0) file else character(0L)
+  
+  class(testOutput) <- c('tinytests2JUnit', class(testOutput))
   return(testOutput)
 }
 
@@ -242,9 +307,23 @@ runTestDir <- function(
       ...
     )
   }
-  td <- abs(as.numeric(Sys.time()) - as.numeric(t0))
-  structure(unlist(testOutput, recursive = FALSE), class = "tinytests", duration = td)
 
+  fileDurations <- unlist(lapply(testOutput, attr, 'fileDurations'), recursive = FALSE)
+  fileTimestamps <- unlist(lapply(testOutput, attr, 'fileTimestamps'), recursive = FALSE)
+  fileHostnames <- unlist(lapply(testOutput, attr, 'fileHostnames'), recursive = FALSE)
+  disabled <- unlist(lapply(testOutput, attr, 'disabled'), recursive = FALSE)
+  if (length(disabled) == 0) disabled <- character(0L) # Since: unlist(list()) -> NULL
+
+  td <- abs(as.numeric(Sys.time()) - as.numeric(t0))
+  structure(
+    unlist(testOutput, recursive = FALSE),
+    class = c("tinytests2JUnit", "tinytests"),
+    duration = td,
+    fileDurations = fileDurations,
+    fileTimestamps = fileTimestamps,
+    fileHostnames = fileHostnames,
+    disabled = disabled 
+  )
 }
 
 

@@ -12,8 +12,9 @@ tag(name, attributes = list(), content = list())
 \item{attributes}{\code{named-list} being the XML attributes.
 Names = attribute names, Values = attribute value.}
 
-\item{content}{\code{unnamed-list} being the content XML-tag. Each element is placed
-next to each other in the tag.}
+\item{content}{\code{unnamed-list} being the content XML-tag. Either child \code{XMLtag} or only
+a single character vector being the xml text content. Currently no mixed-content is allowed.
+See details.}
 }
 \value{
 a \code{XMLtag}-object.
@@ -21,4 +22,12 @@ a \code{XMLtag}-object.
 \description{
 Create a list object that roughly mimics the behaviour of a simplistic XML tag element.
 Supported are XML tag-name, tag-attributes and tag-content.
+}
+\details{
+If a character vector is in the content it is converted to a single-length character vector.
+See \code{\link[=charVecToSingleLength]{charVecToSingleLength()}}
+
+Mixed content eg. a text string and a child xml tag next to each other is syntaxtically allows.
+In practices it does not occur for XML that is schema formatted with XSD (like JUnit).
+So for simplicity it is not supported here.
 }
