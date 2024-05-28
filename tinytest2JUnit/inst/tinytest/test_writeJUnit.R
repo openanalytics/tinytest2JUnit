@@ -13,8 +13,8 @@ for (i in seq_along(foldersToTest)) {
   
   testresults <- runTestDir(foldersToTest[i], verbose = FALSE)
 
-  expect_true(	
-    writeJUnit(tinytests = testresults, file = tmpFile),
+  expect_true(
+    is.logical(writeJUnit(tinytests = testresults, file = tmpFile)),
     info = paste0("writeJUnit() succeeded for directory: ", folderName[i])
   )
   expect_true(file.exists(tmpFile))

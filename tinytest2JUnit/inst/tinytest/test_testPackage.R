@@ -1,6 +1,6 @@
 
 tmpFile <- tempfile()
-result <- testPackage("tinytest", file = tmpFile)
+result <- testPackage("tinytest", file = tmpFile, verbose = 0)
 expect_inherits(result, "tinytests2JUnit")
 startFile <- readLines(tmpFile, n = 1)
 expect_equal(startFile, '<?xml version="1.0" encoding="UTF-8"?>')

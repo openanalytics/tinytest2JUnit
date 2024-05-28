@@ -278,21 +278,22 @@ errorTestcaseTag <- function(tinytest) {
 
   formattedStacktrace <- attr(tinytest, "formattedStacktrace")
   if (!is.na(formattedStacktrace)) {
-    stacktraceDesc <- paste0("Stacktrace:\n\n", attr(tinytest, "stacktrace"))
+    stacktraceDesc <- paste0("Stacktrace:\n\n", formattedStacktrace)
   } else {
     stacktraceDesc <- "No Stacktrace available!"
   }
-
-  errorDescription <- paste0(
+  errorDescription <- paste(
     paste0("Uncaught error in test file: ", basename(attr(tinytest, "file"))),
     "No other tests from the test file could be captured duo the error.",
     errorMsg,
     "\n",
     stacktraceDesc,
-    collapse = "\n"
+    sep = "\n"
   )
   errorDescription <- escapeXmlText(errorDescription)
-  errorTagMessage <- paste0("Uncaught error in test file: ", basename(attr(tinytest, "file")))
+  errorTagMessage <- paste0(
+    "Uncaught error in test file: ", basename(attr(tinytest, "file")), "\n", errorMsg
+  )
 
   errorTag <- tag(
     name = "error",

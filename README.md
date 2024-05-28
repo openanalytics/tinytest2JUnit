@@ -176,7 +176,7 @@ stages {
 }
 ```
 
-Download the full Jenkinsfile [here](./ci_examples/exampe_Jenkinsfile)
+Download the full Jenkinsfile [here](./ci_examples/example_jenkins)
 
 See here the example [here](./Dockerfile) for tinytest2JUnit testing itself!
 
