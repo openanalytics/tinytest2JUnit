@@ -123,20 +123,14 @@ pipeline {
                                 sh 'R -q -e \'install.packages(list.files(".", "tinytest2JUnit_.*.tar.gz"), repos = NULL)\''
                             }
                         }
-                        stage('Test and coverage') {
+                        stage('Test') {
                             steps {
                                 dir('tinytest2JUnit') {
                                     sh '''R -q -e \'
-                                    code <- c(
-                                       "library(tinytest2JUnit)",
-                                       "testResults <- tinytest2JUnit::runTestDir(system.file(\\"tinytest\\", package = \\"tinytest2JUnit\\"))",
-                                       "tinytest2JUnit::writeJUnit(testResults, file = file.path(getwd(), \\"results.xml\\"))",
-                                       "if (!tinytest::all_pass(testResults)) stop(\\"Test Failure\\")"
-                                    )
-                                    # Execute above code (eg. perform the test) and track coverage. 
-                                    # Note! no coverage will be availalbe if any test failed!
-                                    packageCoverage <- covr::package_coverage(type = "none", code = code)
-                                    covr::to_cobertura(packageCoverage)
+                                       library(tinytest2JUnit)
+                                       testResults <- tinytest2JUnit::runTestDir(system.file("tinytest", package = "tinytest2JUnit"))
+                                       tinytest2JUnit::writeJUnit(testResults, file = file.path(getwd(), "results.xml"))
+                                       if (!tinytest::all_pass(testResults)) stop("Test Failure")
                                     \''''
                                 }
                             }
@@ -144,7 +138,6 @@ pipeline {
                                 always {
                                     dir('tinytest2JUnit') {
                                         junit 'results.xml'
-                                        cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
                                     }
                                 }
                             }
