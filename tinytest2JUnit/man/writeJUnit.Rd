@@ -16,28 +16,50 @@ JUnit xml content to. By default \code{stdout()} connection is used.}
 By default TRUE.}
 }
 \value{
-\code{invisible: TRUE}.
+\code{invisible(logical(1))} the results of \code{\link[tinytest:tinytests]{tinytest::all_pass()}} on the tinytests object.
 }
 \description{
-Write the \code{tinytests}-object to a JUnit XML reporting file.
+Write the \code{tinytests}-object to a JUnit XML reporting file. If a \code{tinytests2JUnit} is provided
+(returned by \code{\link[=runTestDir]{runTestDir()}}) more info will get reported.
 }
-\section{Side-effects}{
-
-Side effects are registered as a tests in the JUnit output and have been given a status
-"SIDE-EFFECT". The call and diff is also returned in the standard-output of the testcase tag.
-
-They are however not considered as failures and would thus not stop a pipeline.
-}
-
 \section{Errors}{
 
 In case of overwrite = FALSE and the file already exists an error is thrown.
 }
 
+\section{Side-effects}{
+
+Side effects are registered as 'passed' tests in the JUnit output and have been given a status
+"SIDE-EFFECT". The call and diff is also returned in the standard-output of the testcase tag.
+
+They are not considred failures and would thus not stop a pipeline.
+}
+
+\section{tinytests to JUnit}{
+
+
+To comply the the JUnit specification the tests results are adapted as follows:
+\itemize{
+\item A single test run \code{tinytests} is mapped to a \verb{<testsuites>} tag.
+\item All \code{tinytest} results from a single file are mapped to a single \verb{<testsuite>} tag.
+\itemize{
+\item The name of the testsuite is equal to the test file name (without the file suffix)
+}
+\item An individual \code{tinytest} object (eg. a single \verb{except_*} exception test) is mapped to a
+\verb{<testcase>} tag.
+\itemize{
+\item The name of the testcase is equal to the fileName + Line specification of where the expect
+statement is performed + the info.
+}
+}
+
+For reference: \url{https://llg.cubic.org/docs/junit/}
+}
+
 \examples{
 # Run tests with `tinytest`
 dirWithTests <- system.file("example_tests/multiple_files",package = "tinytest2JUnit")
-testresults <- runTestDir(dirWithTests, verbose = FALSE)
+testresults <- runTestDir(dirWithTests)
 
 writeJUnit(testresults) # Writes content to stdout
 

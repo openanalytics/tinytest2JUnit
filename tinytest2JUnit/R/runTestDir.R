@@ -2,13 +2,13 @@
 #'
 #' Help function to generate the formatted string for a single stack frame.
 #' 
-#' @param call `character(n)`: deparsed call for the given stack. Each element corresponds to 
+#' @param framecall `character(n)`: deparsed call for the given stack. Each element corresponds to 
 #'    a line.
 #' @param frameN `integer(1)`: frame nummer.
 #' @param hasSrcInfo `logical(1)`: Does the call have any source info? 
 #' @param dirName `character(1)`: the directory name of the source file.
-#" @param filename `character(1)`: filename of the source. Value ignored if hasSrcInfo=TRUE.
-#" @param linenr `character(1)`: linenr in the source where the call occured..
+#" @param fileName `character(1)`: filename of the source. Value ignored if hasSrcInfo=TRUE.
+#" @param lineNr `character(1)`: linenr in the source where the call occured..
 #'    Value ignored if hasSrcInfo=TRUE.
 #' 
 #' @return `characer(1)` the formatted character string containing info of a single frame in the 
@@ -70,9 +70,9 @@ formattedFrame <- function(framecall, frameN, hasSrcInfo, dirName, fileName, lin
 getFormattedStacktrace <- function() {
   trace <- .traceback(4)
   hasSrcInfo <- vapply(trace, function(frame) !is.null(attr(frame, "srcref")), logical(1))
-  fileNames <- lapply(trace, getSrcFilename)
-  lineNr <- lapply(trace, getSrcLocation)
-  dirNames <- lapply(trace, getSrcDirectory)
+  fileNames <- lapply(trace, utils::getSrcFilename)
+  lineNr <- lapply(trace, utils::getSrcLocation)
+  dirNames <- lapply(trace, utils::getSrcDirectory)
   result <- Map(
     f = formattedFrame,
     framecall = trace,
@@ -87,7 +87,7 @@ getFormattedStacktrace <- function() {
   isFrameProvokingTest <- vapply(
     X = trace,
     FUN = function(frame) {
-      dir <- getSrcDirectory(frame)
+      dir <- utils::getSrcDirectory(frame)
       if (length(dir) == 0) return(FALSE)
       endsWith(dir, "tinytest/R") && identical(as.character(frame), "eval(expr, envir = e)")
     },
@@ -96,7 +96,8 @@ getFormattedStacktrace <- function() {
 
   # If internals of tinytest change: simply default back to showing whole stacktrace
   if (any(isFrameProvokingTest)) {
-    indx <- tail(which(isFrameProvokingTest), n = 1)# There should be only 1 but you never known...
+    # There should be only 1 but you never known...
+    indx <- utils::tail(which(isFrameProvokingTest), n = 1)
 
     # Current internals are that the one frame deeper is also a 'eval(expr, envir = e)'
     # We also want to remove this. But if the internals changed default to whole stacktrace
@@ -119,6 +120,9 @@ getFormattedStacktrace <- function() {
 #'
 #' An object of class `tinytests2JUnit`. Note the plurar. A subclass of [tinytest::tinytests()] 
 #' containing extra info recordings that are used in the export to JUnit.
+#'
+#' @param x `tinytests2JUnit` object to subset. 
+#' @param i object to subset the `x` with. 
 #'
 #' @details 
 #' Following details are recorded when running the tests files and stored as additional attributes 
@@ -214,69 +218,106 @@ runTestFile <- function(file, ...) {
 
   # Take by preference the file defintion internally used by tinytest
   file <- if (length(testOutput) != 0) attr(testOutput[[1]], "file") else basename(file)
-  attr(testOutput, "fileDurations") <- setNames(
-    as.numeric(timeEnd) - as.numeric(timeStart),
-    nm = file
-  )
-  attr(testOutput, "fileTimestamps") <- setNames(
-    strftime(timeStart, "%Y-%m-%dT%H:%M:%S%z"),
-    nm = file
-  )
-  attr(testOutput, "fileHostnames") <- setNames(Sys.info()['nodename'], nm = file)
+
+  fileDurations <- as.numeric(timeEnd) - as.numeric(timeStart)
+  names(fileDurations) <- file 
+  attr(testOutput, "fileDurations") <- fileDurations
+
+  fileTimestamps <- strftime(timeStart, "%Y-%m-%dT%H:%M:%S%z")
+  names(fileTimestamps) <- file
+  attr(testOutput, "fileTimestamps") <- fileTimestamps
+
+  fileHostnames <- Sys.info()['nodename']
+  names(fileHostnames) <- file
+  attr(testOutput, "fileHostnames") <- fileHostnames 
+
   attr(testOutput, "disabled") <- if (length(testOutput) == 0) file else character(0L)
   
   class(testOutput) <- c('tinytests2JUnit', class(testOutput))
   return(testOutput)
 }
 
-#' Run all the tests in a directory (CI friendly)
-#'  
-#' `runTestDir` is a drop in replacement for [tinytest::run_test_dir()] but with the key 
-#' difference that if an uncaught exception occurs in a file, rather then crashing the testing 
-#' progress, a failed [tinytest::tinytest()] is added to the resulting `tinytests` object 
-#' with info about the crash. In the JUnit this will get repored as "error"-tag.
+#' Run all the test files in a directory
+#'
+#' [runTestDir()] is a drop in replacement for [tinytest::run_test_dir()] with the key 
+#' difference that errors thrown from within a test file are caught and get reported with a 
+#' a stacktrace in the JUnit report. In addition, some extra metrics are recored for the JUnit 
+#' report, such as: timestamp, test duration, hostname and if tests are disabled (see details for 
+#' more info).
 #' 
-#' @param dir \code{[character]} path to directory
-#' @param pattern \code{[character]} A regular expression that is used to find
+#' @param dir `character(1)` path to directory
+#' @param at_home `logical(1)` should local tests be run? By default FALSE. Unlike 
+#'   [tinytest::run_test_dir()] which is meant to be called in a local interactive context. This 
+#'   function is meant to be called in a non-interactive CI environment, where we want to mimic the
+#'   behaviour of how tests would get run by R CMD Check. 
+#'   See also `at_home` documentation in tinytest package.
+#' @param pattern `character(1)` A regular expression that is used to find
 #'   scripts in \code{dir} containing tests (by default \code{.R} or \code{.r}
 #'   files starting with \code{test}).
-#' @param cluster A \code{\link{makeCluster}} object to run the test files on. Note, it is 
-#'   expected that the clusters has already bene prepared. Most notable, the package to test 
-#'   has should already been loaded onto the clusters. `runTestDir` will load the package 
+#' @param cluster A `cluster` object to run the test files on. Note, it is 
+#'   expected that the clusters has already been prepared. Most notable, the package to test 
+#'   should already been loaded. `runTestDir` will load the package 
 #'   "tinytest" for you into the clusters. See [tinytest::run_test_dir()] for more details.
-#' @param lc_collate See [tinytest::run_test_file()].
+#' @param lc_collate See [tinytest::run_test_dir()].
 #' @param ... Arguments passed on to [tinytest::run_test_file()]
-#' @return A `tinytests` object. 
 #' 
-#' @section Motivation:
-#'
-#' If one would generate `tinytests` object via [tinytest::run_test_dir()] then only a 
-#' single uncaught error is enough to prevent CI from presenting the tests results. 
-#' This is because the different run tests function tinytest let uncaught errors bubble up. 
-#' While this is logically in an interactive / R CMD CHECK context, it is a bit unexpected in the 
-#' CI-pipeline where one would still like to see the tests results.
-#' Users would be foreced to dig into the R logs of the testing step to see what went wrong.
+#' @return A `tinytests2Junit` object to be provided to the [writeJUnit()] function.
 #' 
-#' It would be nice if the all the tests from test files that did not have uncaught error are still
-#' presented in the CI tool and that uncaught exceptions are reported as a failures
-#' with all the info describing the uncaught error.
-#'
 #' @details
+#' [runTestDir()] is meant as a CI-friendly alternative to the native [tinytest::run_test_dir()]. 
+#' It catches errors that are raised in the tests files and adds them as a "failed" `tinytest` 
+#' in the output. 
+#'
+#' [tinytest::run_test_dir()] would have let the error bubble up, stop the testing process and 
+#' not report any failures from other tests. One is then also forced to look into the 
+#' logs of the CI to see what the error was. The output of [runTestDir()] in combination with 
+#' [writeJUnit()] will present you the error in the JUnit togheter with a stack trace. Next to the 
+#' test results of the other files that ran without a problem. 
+#' 
+#' If you prefer the behaviour of [tinytest::run_test_dir()] you can still use it in combination 
+#' [writeJUnit()].
+#'
+#' Caught errors are returned in the output as as sub-class of `tinytest` object. This is however 
+#' considred implemenation detail and can be subject to change.
+#' 
 #' Note, function arguments explicilty listed in [tinytest::run_test_dir()] but not here can still
 #' still be provided via `...`
 #' 
-#' @seealso [tinytest::run_test_dir()] for how the function is inteded to behave.
+#' @section tinytests2JUnit:
+#' The returned object is a `tinytests2JUnit` object (note the plural). This object 
+#' contains additional info compared to a `tinytests` object that is used in the JUnit report.
+#' 
+#' The following additional info will get reported:
+#' 
+#' * The timestamp per test file on when it got invoked. 
+#' * The test duration per test file.
+#' * The system hostname per test file on where it got invoked. This is mainly of interests for 
+#'   different `clusters`. 
+#' * If a test file is disabled. A test file is considered disabled if no tests 
+#'   occur with in the file. 
+#'   It is then assumed that at the top of file some conditional statement 
+#'   made the test file exist early.
+#'
+#' @seealso 
+#' * [tinytest::run_test_dir()] for how the function is inteded to behave.
+#' * [writeJUnit()] where it is expected that the output of this function to be provided to.
+#' * [testPackage()] for an higher-level function to simply test a package.
+#' 
 #' @export 
+#' @examples 
+#' # Run tests with `tinytest`
+#' dirWithTests <- system.file("example_tests/multiple_files",package = "tinytest2JUnit")
+#' testresults <- runTestDir(dirWithTests)
+#' 
+#' writeJUnit(testresults) # Writes content to stdout
 runTestDir <- function(
   dir = "inst/tinytest", 
+  at_home = FALSE,
   pattern = "^test.*\\.[rR]$",
   cluster = NULL,
   lc_collate = getOption("tt.collate", NA),
   ...
 ) {
-  if (!requireNamespace("tinytest")) {
-    stop("The package tinytest should be installed to use the runTestDir function", call. = FALSE) 
-  }
 
   t0 <- Sys.time()
 
@@ -296,6 +337,7 @@ runTestDir <- function(
     testOutput <- lapply(
       X = basename(testfiles),
       FUN = runTestFile,
+      at_home = at_home,
       ...
     )
   } else {
@@ -304,6 +346,7 @@ runTestDir <- function(
       cl = cluster,
       X = testfiles,
       fun = runTestFile,
+      at_home = at_home,
       ...
     )
   }

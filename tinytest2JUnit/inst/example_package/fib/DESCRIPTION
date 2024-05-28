@@ -1,0 +1,14 @@
+Package: fib
+Type: Package
+Title: Package computing the fibonnaci sequences
+Version: 1.0.0
+Date: 2024-05-28
+Author: Lennart Tuijnder
+Maintainer: Lennart Tuijnder <lennart.tuijnder@openanalytics.eu>
+Description: 'fib' is a package that compute the fibonnaci sequence however it contains a bug!
+   This is actually on purpose as this package was crated for demonstration purposes for the 
+   tinytest2JUnit package!
+License: file LICENSE
+RoxygenNote: 7.2.3
+Encoding: UTF-8
+Suggests: tinytest

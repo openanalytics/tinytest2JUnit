@@ -9,7 +9,7 @@
 #' @details
 #' Reference for JUnit XML format: https://llg.cubic.org/docs/junit/
 #'
-#' See [tinytests2Junit()] which additional info is recorded.
+#' See details [runTestDir()] which additional info is recorded.
 #' 
 #' @param testResults `tinytests2Junit | `tinytests` object to convert into a JUnit XML object 
 #'   Usually the result of [runTestDir()] for a `tinytests2JUnit` object or native `tinytests`
