@@ -1,0 +1,46 @@
+stages {
+   stage('PkgName') {
+      stages {
+         stage('Roxygen') {
+            steps {
+               sh 'R -q -e \'roxygen2::roxygenize("PkgName")\''
+                            }
+                        }
+         stage('Build') {
+            steps {
+               sh 'R CMD build PkgName'
+                            }
+                        }
+         stage('Check') {
+            steps {
+               script() {
+                  switch(sh(script: 'ls PkgName_*.tar.gz && R CMD check PkgName_*.tar.gz --no-manual --no-tests', returnStatus: true)) {
+                     case 0: currentBuild.result = 'SUCCESS'
+                     default: currentBuild.result = 'FAILURE'; error('script exited with failure status')
+                             }
+                          }
+                       }
+                    }
+         stage('Install') {
+            steps {
+               sh 'R -q -e \'install.packages(list.files(".","PkgName_.*.tar.gz"), repos = NULL)\''
+               sh 'R -q -e \'install.packages("tinytest2JUnit")\''
+              }
+         }
+         stage('Test') {
+            steps {
+               dir('PkgName') {
+                  sh 'R -q -e \'tinytest2JUnit::testPackage(pkgname ="PkgName", file = file.path(getwd(), "results.xml"))\''
+               }
+            }
+            post {
+               always {
+                   dir('PkgName') {
+                       junit 'results.xml'
+                   }
+               }
+            }
+         }
+      }
+   }
+}

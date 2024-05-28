@@ -36,6 +36,8 @@ writeJUnit(testresults, file = "output.xml", overwrite = TRUE)
 
 ## Example files for CI/CD integration
 
+Note, that the a `--no-tests` flag is added to the `R CMD check` argument. Since if a tests fails we do not want to stop at the check stage but we want to stop at the test stage after we have written the test results to JUnit.
+
 ### Github Actions
 
 `PkgName` needs to be replaced with the name of your package
@@ -73,11 +75,10 @@ jobs:
           working-directory: "./PkgName"          
           extra-packages: local::.          
       - run: |
-          install.packages("tinytest2JUnit", repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))
+          install.packages("tinytest2JUnit")
         shell: Rscript {0} 
       - run: |
-          library(PkgName);tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="PkgName")),
-           file = file.path(getwd(), "results.xml"))
+          tinytest2JUnit::testPackage(pkgname ="PkgName", file = file.path(getwd(), "results.xml"))
         shell: Rscript {0}   
 
       - name: Test Report
@@ -89,7 +90,9 @@ jobs:
           reporter: java-junit        # Format of test results
 ```
 
-Download this file [here](./.github/workflows/test-report.yml).
+Download this example file [here](./ci_examples/github_test_report.yml).
+
+See here the example [here](./.github/workflows/test-coverage.yml) for tinytest2JUnit testing itself!
 
 ### Gitlab CI/CD
 
@@ -104,22 +107,21 @@ test:
     - apt-get update && apt-get install --no-install-recommends -y libxml2-dev # xml2 library needed for roxygen2
     - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
     - echo "Installing dependencies"
-    - R -e 'install.packages(c("roxygen2", "tinytest", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/","https://cloud.r-project.org"))'
+    - R -e 'install.packages(c("roxygen2", "tinytest", "tinytest2JUnit"))'
     - R -e 'roxygen2::roxygenize("PkgName")'
     - R CMD build PkgName
-    - R CMD check PkgName_*.tar.gz --no-manual --no-build-vignettes
+    - R CMD check PkgName_*.tar.gz --no-manual --no-build-vignettes --no-tests
     - R -e 'install.packages("PkgName", repos = NULL)'
-    - R -e 'library(PkgName);tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file("tinytest", package ="PkgName")), file = file.path(getwd(), "results.xml"))'
+    - R -e 'tinytest2JUnit::testPackage(pkgname ="PkgName", file = file.path(getwd(), "results.xml"))'
   artifacts:
     when: always
     paths:
       - results.xml
     reports:
       junit: results.xml
-
 ```
 
-Download this file [here](./.gitlab-ci.yml).
+Download this file [here](./ci_examples/gitlab-ci.yml)
 
 ### Jenkins
 
@@ -142,7 +144,7 @@ stages {
          stage('Check') {
             steps {
                script() {
-                  switch(sh(script: 'ls PkgName_*.tar.gz && R CMD check PkgName_*.tar.gz --no-manual', returnStatus: true)) {
+                  switch(sh(script: 'ls PkgName_*.tar.gz && R CMD check PkgName_*.tar.gz --no-manual --no-tests', returnStatus: true)) {
                      case 0: currentBuild.result = 'SUCCESS'
                      default: currentBuild.result = 'FAILURE'; error('script exited with failure status')
                              }
@@ -151,30 +153,32 @@ stages {
                     }
          stage('Install') {
             steps {
-               sh 'R -q -e \'install.packages(list.files("PkgName", "tinytest2JUnit"), repos = c(OA = "https://repos.openanalytics.eu/repo/public/", CRAN = "https://cloud.r-project.org"))\''
+               sh 'R -q -e \'install.packages(list.files(".","PkgName_.*.tar.gz"), repos = NULL)\''
+               sh 'R -q -e \'install.packages("tinytest2JUnit")\''
               }
          }
-         stage('Test and coverage') {
+         stage('Test') {
             steps {
                dir('PkgName') {
-                  sh '''R -q -e \'code <- "library(PkgName);tinytest2JUnit::writeJUnit(tinytest::run_test_dir(system.file(\\"tinytest\\", package =\\"PkgName\\")), file = file.path(getwd(), \\"results.xml\\"))"
-         packageCoverage <- covr::package_coverage(type = "none", code = code)
-         cat(readLines(file.path(getwd(), "results.xml")), sep = "\n")
-         covr::to_cobertura(packageCoverage)\''''
-              }
+                  sh 'R -q -e \'tinytest2JUnit::testPackage(pkgname ="PkgName", file = file.path(getwd(), "results.xml"))\''
+               }
+            }
+            post {
+               always {
+                   dir('PkgName') {
+                       junit 'results.xml'
+                   }
+               }
+            }
          }
-         post {
-            always {
-               dir('PkgName') {
-                  junit 'results.xml'
-                  cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
-		         	}
-	         	}
-	      }
       }
+   }
+}
 ```
 
-Download the full Jenkinsfile [here](./Jenkinsfile).
+Download the full Jenkinsfile [here](./ci_examples/exampe_Jenkinsfile)
+
+See here the example [here](./Dockerfile) for tinytest2JUnit testing itself!
 
 ## Related
 

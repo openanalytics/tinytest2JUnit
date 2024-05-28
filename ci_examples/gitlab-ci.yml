@@ -1,0 +1,19 @@
+image: r-base:latest 
+
+test:  
+  script:
+    - apt-get update && apt-get install --no-install-recommends -y libxml2-dev # xml2 library needed for roxygen2
+    - echo "options(crayon.enabled=TRUE)" > .Rprofile   # force crayon  mode
+    - echo "Installing dependencies"
+    - R -e 'install.packages(c("roxygen2", "tinytest", "tinytest2JUnit"))'
+    - R -e 'roxygen2::roxygenize("PkgName")'
+    - R CMD build PkgName
+    - R CMD check PkgName_*.tar.gz --no-manual --no-build-vignettes
+    - R -e 'install.packages("PkgName", repos = NULL)'
+    - R -e 'tinytest2JUnit::testPackage(pkgname ="PkgName", file = file.path(getwd(), "results.xml"))'
+  artifacts:
+    when: always
+    paths:
+      - results.xml
+    reports:
+      junit: results.xml
