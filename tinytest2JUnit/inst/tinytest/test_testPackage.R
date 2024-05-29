@@ -21,7 +21,7 @@ testDir <- system.file("example_package/fib/inst/tinytest", package = "tinytest2
 expect_inherits(
   result <- testPackage(
     "fib",
-    file = "/dev/null", 
+    file = tmpFile, 
     testdir = testDir,
     verbose = 0,
     lib.loc = tmpLib,
@@ -35,7 +35,7 @@ expect_equal(sum(sapply(result, isFALSE)), 2L, info = "2 failed tinytests")
 expect_inherits(
   testResults <- testPackage(
     "fib",
-    file = "/dev/null",
+    file = tmpFile, 
     ncpu = 2,
     errorOnFailure = FALSE,
     lib = tmpLib,
@@ -54,7 +54,7 @@ tryCatch(
   expr = {
     testResults <- testPackage(
       "fib",
-      file = "/dev/null",
+      file = tmpFile, 
       ncpu = cluster,
       errorOnFailure = FALSE,
       lib.loc = tmpLib
