@@ -19,8 +19,6 @@ if you have multiple test stages written in tinytest.
 
 * argument `file` of `writeJUnit` now also accepts `connection` object and now has a default argument `stdout()`.
      * This for ease of interacive debugging to see what writeJUnit produces.
-* Return value of `writeJUnit` is now invisible the result of `tinytest::all_pass()`. This can thus be used to 
-  conditionally fail the CI or not. 
 
 ### Adjustments to the JUnit report:
 

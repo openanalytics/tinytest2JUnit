@@ -10,7 +10,7 @@
 #' @param overwrite `logical(1)`: should the file be overwritten if it already exist? 
 #'  By default TRUE.
 #' 
-#' @return `invisible(logical(1))` the results of [tinytest::all_pass()] on the tinytests object.
+#' @return `invisible(TRUE)` Might get another use in the future.
 #' 
 #' @seealso The JUnit XML report format:  \url{https://llg.cubic.org/docs/junit/}
 #' 
@@ -63,5 +63,5 @@ writeJUnit <- function(tinytests, file = stdout(), overwrite = TRUE) {
   cat('<?xml version="1.0" encoding="UTF-8"?>\n', file = file, append = FALSE)
   cat(format(junitXML), sep = "\n", file = file, append = TRUE)
   
-  invisible(tinytest::all_pass(tinytests))
+  invisible(TRUE)
 }

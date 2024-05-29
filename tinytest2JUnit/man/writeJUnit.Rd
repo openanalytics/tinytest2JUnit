@@ -16,7 +16,7 @@ JUnit xml content to. By default \code{stdout()} connection is used.}
 By default TRUE.}
 }
 \value{
-\code{invisible(logical(1))} the results of \code{\link[tinytest:tinytests]{tinytest::all_pass()}} on the tinytests object.
+\code{invisible(TRUE)} Might get another use in the future.
 }
 \description{
 Write the \code{tinytests}-object to a JUnit XML reporting file. If a \code{tinytests2JUnit} is provided
