@@ -1,7 +1,7 @@
 Package: tinytest2JUnit
 Type: Package
 Title: Convert 'tinytest' Output to JUnit XML
-Version: 1.0.3-9002
+Version: 1.1.0
 Maintainer: Lennart Tuijnder <lennart.tuijnder@openanalytics.eu>
 Authors@R: c(
 	person(given = "Anne-Katrin", family = "Hess", email = "anne-katrin.hess@openanalytics.eu", role = c("aut")),
