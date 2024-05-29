@@ -92,9 +92,8 @@ getFormattedStacktrace <- function() {
   isFrameProvokingTest <- vapply(
     X = trace,
     FUN = function(frame) {
-      dir <- utils::getSrcDirectory(frame)
-      if (length(dir) == 0) return(FALSE)
-      endsWith(dir, "tinytest/R") && identical(as.character(frame), "eval(expr, envir = e)")
+      # Note this stack depeneds on how we call the tinytest::run_test_file( !
+      startsWith(as.character(frame[1]), "tinytest::run_test_file(file = file,")
     },
     FUN.VALUE = logical(1)
   )
@@ -104,13 +103,18 @@ getFormattedStacktrace <- function() {
     # There should be only 1 but you never known...
     indx <- utils::tail(which(isFrameProvokingTest), n = 1)
 
-    # Current internals are that the one frame deeper is also a 'eval(expr, envir = e)'
-    # We also want to remove this. But if the internals changed default to whole stacktrace
-    if (indx > 1 && identical(as.character(trace[[indx - 1]]), "eval(expr, envir = e)")) {
+    # Remove tinytest internals. If these ever change: default to the whole stack
+    if (indx > 2) {
 
-      # if indx == 2 -> No stacktrace available! 
-      if (indx == 2) return(NA_character_)
-      result <- result[1:(indx - 2)] 
+      oneStackDeeper <- as.character(trace[[indx - 1]])
+      twoStackDeeper <- as.character(trace[[indx - 2]])
+      internalsTinytest <- "eval(expr, envir = e)"
+      internalIsAsExpected <- (oneStackDeeper == internalsTinytest &&
+        twoStackDeeper == internalsTinytest)
+      if (internalIsAsExpected) {
+        if (indx == 3) return(NA_character_) # No stacktrace
+        result <- result[1:(indx - 3)] 
+      }
     }
   }
   
