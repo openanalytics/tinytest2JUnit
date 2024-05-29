@@ -70,6 +70,6 @@ tryCatch(
 
 
 expect_error(
-  testPackage("fib", file = "/dev/null", lib.loc = tmpLib),
+  testPackage("fib", file = tmpFile, lib.loc = tmpLib),
   info = "By default an error is raised when a test failure occurs"
 )
