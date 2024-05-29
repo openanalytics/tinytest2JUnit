@@ -1,3 +1,8 @@
+
+## 1.1.1
+
+* Fix: CRAN submission adjustments
+
 ## 1.1.0 
 
 ### New Features:
