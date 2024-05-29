@@ -6,11 +6,13 @@ Maintainer: Anne-Katrin Hess <anne-katrin.hess@openanalytics.eu>
 Authors@R: c(
 	person(given = "Anne-Katrin", family = "Hess", email = "anne-katrin.hess@openanalytics.eu", role = c("aut", "cre")),
 	person(given ="Lennart", family = "Tuijnder", email = "lennart.tuijnder@openanalytics.eu", role = c("aut")))
-Description: Unit testing is a solid component of automated CI/CD pipelines. 'tinytest' - a light-weight,
-	zero-dependency  alternative to 'testthat' was developed. To be able to integrate 'tinytests' results into common CI/CD
-	systems the 'tinytests'-object needs to be converted to JUnit XML format. 'tinytest2JUnit' enables this conversion
-	while staying light-weight and only have 'tinytest' as its dependency.
-imports:
+Description: Unit testing is a solid component of automated CI/CD pipelines. 
+	'tinytest' - a lightweight, zero-dependency  alternative to 'testthat' was developed.
+	To be able to integrate 'tinytests' results into common CI/CD systems the test results from 
+	tinytest need to be caputred and converted to JUnit XML format. 
+	'tinytest2JUnit' enables this conversion while staying also lightweight 
+	and only have 'tinytest' as its dependency.
+Imports:
 	tools,
 	parallel,
 	utils,

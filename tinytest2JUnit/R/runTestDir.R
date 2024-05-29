@@ -1,3 +1,8 @@
+#' @importFrom parallel makeCluster clusterExport clusterCall clusterEvalQ
+#' @importFrom utils getSrcFilename getSrcLocation getSrcDirectory tail getFromNamespace
+#' @importFrom tools file_path_sans_ext
+NULL
+
 #' Help function to generate the formatted string for a single stack frame.
 #'
 #' Help function to generate the formatted string for a single stack frame.
@@ -7,8 +12,8 @@
 #' @param frameN `integer(1)`: frame nummer.
 #' @param hasSrcInfo `logical(1)`: Does the call have any source info? 
 #' @param dirName `character(1)`: the directory name of the source file.
-#" @param fileName `character(1)`: filename of the source. Value ignored if hasSrcInfo=TRUE.
-#" @param lineNr `character(1)`: linenr in the source where the call occured..
+#' @param fileName `character(1)`: filename of the source. Value ignored if hasSrcInfo=TRUE.
+#' @param lineNr `character(1)`: linenr in the source where the call occured..
 #'    Value ignored if hasSrcInfo=TRUE.
 #' 
 #' @return `characer(1)` the formatted character string containing info of a single frame in the 
@@ -180,6 +185,7 @@ getFormattedStacktrace <- function() {
 #' @param ... arguments passed on to [tinytest::run_test_file()] 
 #'
 #' @return a `tinytests2JUnit` object (being a subclass of `tinytest` object).
+#' @importFrom tinytest tinytest run_test_file
 runTestFile <- function(file, ...) { 
 
   formattedStacktrace <- NA_character_
@@ -324,7 +330,8 @@ runTestDir <- function(
   testfiles <- dir(dir, pattern = pattern, full.names = TRUE)
   testfiles <- localeSort(testfiles, lc_collate)
 
-  try(setCallWd <- getFromNamespace("set_call_wd", "tinytest")) # If internals change do not crash
+  # If internals change do not crash
+  try(setCallWd <- utils::getFromNamespace("set_call_wd", "tinytest")) 
   if (!inherits(cluster, "cluster")) {
     # set pwd here, to save time in run_test_file.
     oldwd <- getwd()
