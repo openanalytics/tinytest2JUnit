@@ -93,11 +93,6 @@ pipeline {
             stages {
                 stage('tinytest2JUnit') {
                     stages {
-                        stage('Rcpp Compile Attributes') {
-                            steps {
-                                sh 'R -q -e \'if (requireNamespace("Rcpp", quietly = TRUE)) Rcpp::compileAttributes("tinytest2JUnit")\''
-                            }
-                        }
                         stage('Roxygen') {
                             steps {
                                 sh 'R -q -e \'roxygen2::roxygenize("tinytest2JUnit")\''
@@ -126,12 +121,7 @@ pipeline {
                         stage('Test') {
                             steps {
                                 dir('tinytest2JUnit') {
-                                    sh '''R -q -e \'
-                                       library(tinytest2JUnit)
-                                       testResults <- tinytest2JUnit::runTestDir(system.file("tinytest", package = "tinytest2JUnit"))
-                                       tinytest2JUnit::writeJUnit(testResults, file = file.path(getwd(), "results.xml"))
-                                       if (!tinytest::all_pass(testResults)) stop("Test Failure")
-                                    \''''
+                                    sh 'R -q -e \'tinytest2JUnit::testPackage("tinytest2JUnit", file = file.path(getwd(), "results.xml"))\''
                                 }
                             }
                             post {
