@@ -27,19 +27,19 @@ From CRAN:
 install.packages("tinytest2JUnit")
 ```
 
-## Usages
+## Usage
 
 ### Testing your package
 
-The `testPackage` runs the tests of your package `PkgName` and converts the results to a JUnit XML file that can be interpreted by CI/CD systems.
+The function `testPackage` runs the tests of your package `PkgName` and converts the results to a JUnit XML file that can be interpreted by CI/CD systems.
 
 ```r 
 testPackage("PkgName", file = "output.xml")
 ```
 
-Note, `testPackage` acts identical to `tinytest::test_package` and thus assumes that your package is already installed! A build and install stage in your CI is thus required.
+Note, `testPackage` assumes your package is already installed! A build and install stage in your CI is thus required.
 
-### Custom directories
+### Test custom directories
 
 You can also use `runTestDir` to run the tinytests in a specified directory. The output is an S3 `tinytests` object that needs to be provided to `writeJUnit` to convert the test results into JUnit xml report.
 
@@ -48,20 +48,22 @@ testresults <- runTestDir("PkgName/inst/tinytests")
 writeJUnit(testresults, file = "output.xml", overwrite = TRUE)
 ```
 
-Note, you could also just use `tinytest::run_test_dir()` results with `writeJUnit`, but both `runTestDir` and `testPackage` come with the benefit that they capture uncaught errors from the test files, which will get report in the JUnit with stack trace info for ease of debugging. Using `runTestDir` or `testPackage` garantuees that a JUnit test report will be generated. 
+Note, you could also just use `tinytest::run_test_dir()` results with `writeJUnit`. But both `runTestDir` and `testPackage` come with the benefit that they capture uncaught errors from the test files. These will get report in the JUnit with stack trace info for ease of debugging. Using `runTestDir` or `testPackage` garantuees that a JUnit report gets generated!
 
 ### Continue on failure
 
-`testPackage` will (after writing the JUnit report) thron an error if a test failed. Just like `tinyest::test_package()`. This will ensure that the pipeline fails in case a test failed. However, there can be the situation that after the tests you need do to something else in your CI and thus continue on. 
-You can turn off the error raising on failure by specifying `errorOnFailure=FALSE`. Use then the response of `testPackage` or the JUnit report to handle further down the line the potential test failure.
+`testPackage` will (after writing the JUnit report) throw an error if a test failed. This will ensure that the pipeline fails in case a test failed. However, there can be the situation that you need do to something else in your CI afterwards. 
+
+
+You can turn off the error raising on failure by specifying `errorOnFailure=FALSE`. Use then the response of `testPackage` or the JUnit report to handle further handle potential test failures.
 
 ## Example files for CI/CD integration
 
-For the JUnit xml report to generate, one has to ensure that the CI will get to the stage where tinytest2JUnit can run the results.
+#### Side note on R CMD check 
 
-In particular `R CMD check` will also run the tests of your package and if a failure occurs it will return with a non-zero exist status. Potentially stopping your CI from getting the the test stage where the report is produced.
+Since R CMD check also runs the tests, it will fail your CI build at that stage if a test fails. Thus not producing any JUnit test report.
 
-Either you perform your test stage Before the R CMD Check or you add a `--no-tests` flag to your `R CMD Check` call. **WARNING** Only do the latter if you are 100% sure that your test stages cover all the testing. If you have other tests outside of 'tinytest' (like 'testthat' or plain tests files) you do not want to skip those in your CI!
+Either perform the test stage before R CMD check or use the `--no-tests` flag. **Warning**, only use the flag if all the tests are covered in your test stage(s). You do not want to accidentally skip any other testing in your `test/` folder (eg. 'testthat' or plain test files).
 
 ### Github Actions
 
