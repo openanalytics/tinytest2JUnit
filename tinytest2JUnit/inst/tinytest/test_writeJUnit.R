@@ -30,7 +30,7 @@ tmpFile <- tempfile(fileext = ".xml")
 if (file.exists(tmpFile)) stop("File should not have existed!")
 
 randomTestFolder <- sample(foldersToTest, size  = 1)
-testresults <- tinytest::run_test_dir(randomTestFolder, verbose = FALSE)
+testresults <- runTestDir(randomTestFolder, verbose = FALSE)
 
 writeJUnit(tinytests = testresults, file = tmpFile)
 nLinesWrittenFirstTime <- length(readLines(tmpFile))
