@@ -5,8 +5,8 @@
 # roxygen files
 *.Rd
 
-*.gz
-*.tar
+tinytest2JUnit_*.gz
+tinytest2JUnit_*.tar
 *.Rcheck
 
 development/
