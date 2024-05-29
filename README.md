@@ -14,8 +14,10 @@ Similar to the tinytest philosophy this packages comes with no-dependencies.
 
 ## Core idea
 
-* Extract needed info from a tinytest S3 result object (output of `tinytest::run_test_dir()`)
+* Extract needed info from a tinytest S3 result object (eg the result of `tinytest::run_test_dir()`.
 * Convert the output to JUnit XML format as described in this reference: https://llg.cubic.org/docs/junit/
+
+Note, this happens internally for you inside the function `tinytest2Junit::testPackage`! 
 
 ## Install
 
@@ -25,18 +27,41 @@ From CRAN:
 install.packages("tinytest2JUnit")
 ```
 
-## Basic Usage
+## Usages
 
-The `writeJUnit()` function accepts any object of class tinytests and converts it to a JUnit XML file that can be interpreted by CI/CD systems.
+### Testing your package
+
+The `testPackage` runs the tests of your package `PkgName` and converts the results to a JUnit XML file that can be interpreted by CI/CD systems.
+
+```r 
+testPackage("PkgName", file = "output.xml")
+```
+
+Note, `testPackage` acts identical to `tinytest::test_package` and thus assumes that your package is already installed! A build and install stage in your CI is thus required.
+
+### Custom directories
+
+You can also use `runTestDir` to run the tinytests in a specified directory. The output is an S3 `tinytests` object that needs to be provided to `writeJUnit` to convert the test results into JUnit xml report.
 
 ```r
-testresults <- tinytest::run_test_dir("pkgdir")
+testresults <- runTestDir("PkgName/inst/tinytests")
 writeJUnit(testresults, file = "output.xml", overwrite = TRUE)
 ```
 
+Note, you could also just use `tinytest::run_test_dir()` results with `writeJUnit`, but both `runTestDir` and `testPackage` come with the benefit that they capture uncaught errors from the test files, which will get report in the JUnit with stack trace info for ease of debugging. Using `runTestDir` or `testPackage` garantuees that a JUnit test report will be generated. 
+
+### Continue on failure
+
+`testPackage` will (after writing the JUnit report) thron an error if a test failed. Just like `tinyest::test_package()`. This will ensure that the pipeline fails in case a test failed. However, there can be the situation that after the tests you need do to something else in your CI and thus continue on. 
+You can turn off the error raising on failure by specifying `errorOnFailure=FALSE`. Use then the response of `testPackage` or the JUnit report to handle further down the line the potential test failure.
+
 ## Example files for CI/CD integration
 
-Note, that the a `--no-tests` flag is added to the `R CMD check` argument. Since if a tests fails we do not want to stop at the check stage but we want to stop at the test stage after we have written the test results to JUnit.
+For the JUnit xml report to generate, one has to ensure that the CI will get to the stage where tinytest2JUnit can run the results.
+
+In particular `R CMD check` will also run the tests of your package and if a failure occurs it will return with a non-zero exist status. Potentially stopping your CI from getting the the test stage where the report is produced.
+
+Either you perform your test stage Before the R CMD Check or you add a `--no-tests` flag to your `R CMD Check` call. **WARNING** Only do the latter if you are 100% sure that your test stages cover all the testing. If you have other tests outside of 'tinytest' (like 'testthat' or plain tests files) you do not want to skip those in your CI!
 
 ### Github Actions
 
