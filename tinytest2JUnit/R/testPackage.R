@@ -1,5 +1,4 @@
 
-
 #' Test an R package and report the results in JUnit 
 #'
 #' Run all tests of a package and report the results as JUnit xml. This function 
@@ -10,10 +9,11 @@
 #' @param pkgname `character(1)`. Name of the package to tests. 
 #' @param file `character(1) | connection`: Full file path or connection object to write the 
 #'   JUnit xml content to. By default `stdout()` connection is used.
+#'   **Warning** if the file already exist it will be overwritten!
 #' @param errorOnFailure `logical(1)` Should an error be raised (after writing the JUnit) when a 
 #'   at least one test failed? By default TRUE. This is done as a 
 #'   convenience to have the CI fail at the test stage on failure.
-#' @param testDir `character(1)` testing directory of the package. See ?[tinytest::test_package()] 
+#' @param testdir `character(1)` testing directory of the package. See ?[tinytest::test_package()] 
 #'   for more details.
 #' @param lib.loc `character(1) | NULL` Library location where the package is installed. 
 #'   By default: `NULL` meaning the package is searched on the standard .libPaths().
@@ -62,6 +62,9 @@
 #' @inheritSection writeJUnit tinytests to JUnit
 #' @export
 #' @seealso [runTestDir()] and [tinytest::test_package()].
+#' @examples
+#' tmpFile <- tempfile(fileext = ".xml")
+#' testPackage("tinytest", file = tmpFile, verbose = 0)
 testPackage <- function(
   pkgname,
   file = stdout(),
@@ -125,6 +128,7 @@ testPackage <- function(
   }
 
   out <- runTestDir(testdir, at_home = at_home, cluster = cluster, ...) 
+  writeJUnit(tinytests = out, file = file, overwrite = TRUE)
   vTestFailed <- sapply(out, isFALSE)
   if (any(vTestFailed) && errorOnFailure) {
     writeLines(vapply(out[vTestFailed], format, type = "long", FUN.VALUE = character(1)))

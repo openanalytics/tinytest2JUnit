@@ -1,9 +1,13 @@
 
-tmpFile <- tempfile()
-result <- testPackage("tinytest", file = tmpFile, verbose = 0)
-expect_inherits(result, "tinytests2JUnit")
+tmpFile <- tempfile(fileext = ".xml")
+expect_inherits(
+  testPackage("tinytest", file = tmpFile, verbose = 0),
+  "tinytests2JUnit",
+  info = "Works with package in standard lib path."
+)
 startFile <- readLines(tmpFile, n = 1)
 expect_equal(startFile, '<?xml version="1.0" encoding="UTF-8"?>')
+
 
 tmpLib <- tempdir()
 fibPackage <- system.file(
@@ -13,13 +17,33 @@ fibPackage <- system.file(
 )
 install.packages(fibPackage, type = "source", repos = NULL, lib = tmpLib)
 
-testResults <- testPackage("fib", ncpu = 2, errorOnFailure = FALSE)
+testDir <- system.file("example_package/fib/inst/tinytest", package = "tinytest2JUnit")
 expect_inherits(
-  testResults,
+  result <- testPackage(
+    "fib",
+    file = "/dev/null", 
+    testdir = testDir,
+    verbose = 0,
+    lib.loc = tmpLib,
+    errorOnFailure = FALSE
+  ),
   "tinytests2JUnit",
-  info = "testPackage with cluster and custom lib works and errorOnFailure works!"
+  info = "Works with a directly provided path and custom lib and errorOnFailure = FALSE."
 )
-expect_equal(sum(sapply(testResults, isFALSE)), 2L, info = "2 failed tinytests")
+expect_equal(sum(sapply(result, isFALSE)), 2L, info = "2 failed tinytests")
+
+expect_inherits(
+  testResults <- testPackage(
+    "fib",
+    file = "/dev/null",
+    ncpu = 2,
+    errorOnFailure = FALSE,
+    lib = tmpLib,
+    verbose = 0
+  ),
+  "tinytests2JUnit",
+  info = "Parralization works"
+)
 
 tags <- tinytest2JUnit:::constructTestsuitesTag(testResults)
 expect_equal(tags$attributes$errors, 1L, info = "The hard crash is correctly registed as an Error.")
@@ -28,7 +52,13 @@ expect_equal(tags$attributes$errors, 1L, info = "The hard crash is correctly reg
 cluster <- parallel::makeCluster(2)
 tryCatch(
   expr = {
-    testResults <- testPackage("fib", ncpu = cluster, errorOnFailure = FALSE, lib.loc = tmpLib)
+    testResults <- testPackage(
+      "fib",
+      file = "/dev/null",
+      ncpu = cluster,
+      errorOnFailure = FALSE,
+      lib.loc = tmpLib
+    )
     expect_inherits(
       testResults,
       "tinytests2JUnit",
@@ -40,6 +70,6 @@ tryCatch(
 
 
 expect_error(
-  testPackage("fib", lib.loc = tmpLib),
+  testPackage("fib", file = "/dev/null", lib.loc = tmpLib),
   info = "By default an error is raised when a test failure occurs"
 )
