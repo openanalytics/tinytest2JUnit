@@ -61,9 +61,11 @@ You can turn off the error raising on failure by specifying `errorOnFailure=FALS
 
 #### Side note on R CMD check 
 
-Since R CMD check also runs the tests, it will fail your CI build at that stage if a test fails. Thus not producing any JUnit test report.
+Since R CMD check also runs the tests, it will fail your CI build at that stage if a test fails. In that case, no JUnit test report will be produced.
 
-Either perform the test stage before R CMD check or use the `--no-tests` flag. **Warning**, only use the flag if all the tests are covered in your test stage(s). You do not want to accidentally skip any other testing in your `test/` folder (eg. 'testthat' or plain test files).
+For that reason, you need to either perform the test stage before R CMD check or use the `--no-tests` flag. 
+
+**Warning**, only use the flag if all the tests are covered in your test stage(s). You do not want to accidentally skip any other testing in your `test/` folder (eg. 'testthat' or plain test files).
 
 ### Github Actions
 
