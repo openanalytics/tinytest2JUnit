@@ -121,7 +121,7 @@ pipeline {
                         stage('Test') {
                             steps {
                                 dir('tinytest2JUnit') {
-                                    sh 'R -q -e \'tinytest2JUnit::testPackage("tinytest2JUnit", file = file.path(getwd(), "results.xml"))\''
+                                    sh 'R -q -e \'tinytest2JUnit::testPackage("tinytest2JUnit", file = file.path(getwd(), "results.xml"), at_home = TRUE)\''
                                 }
                             }
                             post {
