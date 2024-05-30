@@ -2,9 +2,6 @@
 .project
 .settings
 
-# roxygen files
-*.Rd
-
 tinytest2JUnit_*.gz
 tinytest2JUnit_*.tar
 *.Rcheck
