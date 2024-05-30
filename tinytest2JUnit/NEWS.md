@@ -1,4 +1,8 @@
 
+## 1.1.2
+
+* Fix: Some more CRAN adjustments duo some windows issues
+
 ## 1.1.1
 
 * Fix: CRAN submission adjustments
