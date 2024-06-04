@@ -121,7 +121,7 @@ jobs:
 
 Download this example file [here](./ci_examples/github_test_report.yml).
 
-See here the example [here](./.github/workflows/test-coverage.yml) for tinytest2JUnit testing itself!
+See here the example [here](./.github/workflows/test-report.yml)
 
 ### Gitlab CI/CD
 
@@ -207,7 +207,7 @@ stages {
 
 Download the full Jenkinsfile [here](./ci_examples/example_jenkins)
 
-See here the example [here](./Dockerfile) for tinytest2JUnit testing itself!
+See here the example [here](./Jenkinsfile) for tinytest2JUnit testing itself!
 
 ## Related
 
